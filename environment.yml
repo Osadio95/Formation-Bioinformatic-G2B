@@ -1,0 +1,32 @@
+name: bioinformatic
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  # ─── Contrôle qualité des lectures ───────────────────────────────────────────
+  - fastqc               # Rapport qualité des fichiers FASTQ
+  - fastp                # Trimming et filtrage des lectures (remplace Trimmomatic)
+  - multiqc              # Agrège les rapports FastQC / fastp en un seul rapport HTML
+
+  # ─── Téléchargement de données (NCBI SRA) ────────────────────────────────────
+  - sra-tools            # Contient prefetch, fastq-dump, fasterq-dump
+
+  # ─── Estimation / distance entre génomes ────────────────────────────────────
+  - mash                 # Comparaison rapide de génomes par sketching MinHash
+
+  # ─── Assemblage de génome ────────────────────────────────────────────────────
+  - spades               # Assembleur de génomes (bactéries, virus, métagénomes)
+
+  # ─── Évaluation de l'assemblage ─────────────────────────────────────────────
+  - quast                # Statistiques d'assemblage (N50, contigs, etc.)
+  - busco                # Complétude de l'assemblage via gènes universels
+
+  # ─── Typage et caractérisation des bactéries ────────────────────────────────
+  - mlst                 # Typage MLST (Multi-Locus Sequence Typing)
+  - ectyper              # Sérotypage de E. coli (antigènes O et H)
+
+  # ─── Résistance aux antimicrobiens ──────────────────────────────────────────
+  - amrfinderplus        # Détection de gènes de résistance (base NCBI AMRFinder)

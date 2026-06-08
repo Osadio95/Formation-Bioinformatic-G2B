@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Module bactériologie - Débutant</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f9f9f9; 
+      line-height: 1.6;
+      display: flex;
+      height: 100vh;
+    }
+    
+    /* Menu latéral */
+    .sidebar {
+      width: 300px;
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      overflow-y: auto;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar h3 {
+      margin-bottom: 20px;
+      color: #3498db;
+      font-size: 1.2em;
+    }
+    
+    .menu-item {
+      margin-bottom: 8px;
+    }
+    
+    .menu-item a {
+      display: block;
+      color: #ecf0f1;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+      font-size: 0.9em;
+    }
+    
+    .menu-item a:hover {
+      background-color: #34495e;
+      color: #3498db;
+    }
+    
+    .menu-item a.active {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    /* Bouton toggle pour mobile */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    /* Contenu principal */
+    .main-content {
+      margin-left: 300px;
+      padding: 40px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    
+    h1, h2 { 
+      color: #2c3e50; 
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      font-size: 2em;
+      border-bottom: 3px solid #3498db;
+      padding-bottom: 10px;
+    }
+    
+    h2 {
+      font-size: 1.5em;
+      margin-top: 30px;
+      padding-left: 10px;
+      border-left: 4px solid #3498db;
+    }
+    
+    pre { 
+      background-color: #f4f4f4; 
+      padding: 15px; 
+      border-radius: 6px; 
+      overflow-x: auto;
+      margin: 15px 0;
+      border-left: 4px solid #3498db;
+    }
+    
+    code { 
+      font-family: Consolas, monospace; 
+      font-size: 0.9em;
+    }
+    
+    .section { 
+      margin-bottom: 40px;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    ul {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+    
+    li {
+      margin-bottom: 5px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Bouton menu pour mobile -->
+<button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+<!-- Menu latéral -->
+<div class="sidebar" id="sidebar">
+  <h3>Menu</h3>
+  <div class="menu-item"><a href="#workflow">Workflow</a></div>
+  <div class="menu-item"><a href="#mise-a-jour">1) Mise à jour du système</a></div>
+  <div class="menu-item"><a href="#miniconda">2) Installer Miniconda</a></div>
+  <div class="menu-item"><a href="#conda-env">3) Créer un environnement conda</a></div>
+  <div class="menu-item"><a href="#outils-bioinfo">4a) Installer les outils bioinfo</a></div>
+  <div class="menu-item"><a href="#get-reads">4b) Téléchargement des FastQ</a></div>
+  <div class="menu-item"><a href="#controle-qualite">5) Contrôle qualité</a></div>
+  <div class="menu-item"><a href="#correction-reads">6) Correction des reads</a></div>
+  <div class="menu-item"><a href="#assemblage">7) Assemblage de novo</a></div>
+  <div class="menu-item"><a href="#identification-espece">8) Identification de l'espèce</a></div>
+  <div class="menu-item"><a href="#evaluation-assemblage">9) Évaluation de l'assemblage</a></div>
+  <div class="menu-item"><a href="#contamination">10) Détection de la contamination</a></div>
+  <div class="menu-item"><a href="#completude">11) Évaluation de la complétude</a></div>
+  <div class="menu-item"><a href="#typage">12) Typage E.coli et Salmonella</a></div>
+  <div class="menu-item"><a href="#abricate-install">13) Installation de abricate</a></div>
+  <div class="menu-item"><a href="#abricate-analyse">14) Recherche avec abricate</a></div>
+  <div class="menu-item"><a href="#resfinder">15) Recherche avec ResFinder</a></div>
+  <div class="menu-item"><a href="#mlst">16) Analyse de la MLST</a></div>
+  <div class="menu-item"><a href="#exercice1">Exercice 1</a></div>
+  <div class="menu-item"><a href="#exercice2">Exercice 2</a></div>
+  <div class="menu-item"><a href="#annotation">18) Annotation du génome</a></div>
+  <div class="menu-item"><a href="#phylogenie">19) Phylogenie</a></div>
+  <div class="menu-item"><a href="#docker">Commandes avec Docker</a></div>
+  
+</div>
+
+<!-- Contenu principal -->
+<div class="main-content">
+  <h1>Antimicrobioresistance – Travaux Pratique DIC G2B - 2026</h1>
+
+  <div class="section" id="workflow">
+    <h2>Workflow</h2>
+    <div style="text-align: center;">
+      <img src="C:/Users/bmd tech/Downloads/DIC1.drawio.png" alt="Description de l'image" style="max-width: 100%; height: auto;">
+    </div>
+  </div>
+
+  <div class="section" id="mise-a-jour">
+    <h2>1) Mise à jour du système</h2>
+    <h4>Advanced Package Tool</h4>
+    <p>C’est un gestionnaire de paquets utilisé par les distributions Linux basées sur Debian (comme Ubuntu) pour installer,
+  mettre à jour ou supprimer des logiciels et leurs dépendances automatiquement depuis des dépôts en ligne.</p>
+    <pre><code>sudo apt update && sudo apt upgrade -y
+
+#Sur Mac :   
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" #Installer Homebrew
+brew update    # Met à jour la liste des formules disponibles
+brew upgrade   # Met à jour les logiciels installés
+    </code></pre>
+    <ul>
+      <li>sudo (superuser do) : commande qui permet d’exécuter une autre commande avec les privilèges administrateur</li>
+      <li>apt update : Met à jour la liste des paquets disponibles</li>
+      <li>apt upgrade : Met à jour les paquets installés s'il existe une nouvelle version</li>
+    </ul>
+  </div>
+
+  <div class="section" id="miniconda">
+    <h2>2) Installer Miniconda (UNIQUEMENT POUR PREMIERE UTILISATION DE LINUX)</h2>
+    <pre><code>cd ~
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+source ~/.bashrc
+
+#Sur Mac (arm64) : 
+curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
+bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
+    <ul>
+      <li>wget : Permet de télécharger un fichier grâce à un lien de téléchargement</li>
+      <li>bash : Ouvrir l’interpréteur Bash et d’exécuter automatiquement toutes les commandes écrites dans le fichier </li>
+    </ul>
+  </div>
+
+  <div class="section" id="conda-env">
+    <h2>3) Créer un environnement conda</h2>
+    <pre><code>conda create -n amr -c bioconda -c conda-forge -y
+conda create -n trimming python=3.12 -y
+conda create -n busco -c bioconda -c conda-forge -y
+conda create -n abricate -c bioconda -c conda-forge -y
+conda create -n mlst -c bioconda -c conda-forge -y
+conda create -n seqsero2 -c bioconda -c conda-forge seqsero2=1.3.1 -y
+conda create -n multiqc -c bioconda -c conda-forge multiqc=1.30 -y</code></pre>
+<p>Tous les logiciels ne peuvent pas fonctionner dans un seul environnement fait de conflits entre eux.</p>
+    <ul>
+      <li>conda create : Permet de créer un environnement conda</li>
+      <li>-n : donne le nom de l'environnement</li>
+      <li>-c : ajoute un channel dans l'environnement</li>
+      <li>-y : répondre "yes" à tout</li>
+    </ul>
+  </div>
+
+  <div class="section" id="outils-bioinfo">
+    <h2>4) Installer les outils bioinfo</h2>
+    <pre><code># Active l'environnement amr
+conda activate amr
+
+# Installe les logiciels avec des versions spécifiques
+conda install -c bioconda -c conda-forge fastp=1.0.1 mash=2.3 nanoplot=1.44.1 resfinder sra-tools=3.2.1 ectyper=2.0.0 -y 
+
+# Vérification des installations
+fastp --version #vérifie la version de fastp
+mash --version #vérifie l'installation de mash
+NanoPlot --version #vérifie l'installation de NanoPlot
+ectyper --version #vérifie l'installation de ecytper
+prefetch --version #vérifie l'installation de sra-tools
+python -m resfinder --version  #vérifie l'installation de resfinder
+
+# Désactive l'environnement amr
+conda deactivate</code></pre>
+<p> Il faut au préalable activer l'environnement conda dans lequel vous avez installé le logiciel</p>
+  </div>
+
+
+  <div class="section" id="get-reads">
+    <h2>4b) Téléchargement des reads depuis Sequence Reads Archive (SRA)</h2>
+    <pre><code>prefetch SRR34342811 #Télécharger les fichiers depuis SRA
+fastq-dump --gzip --split-files SRR34342811/SRR34342811.sra #Désapparie les reads et les compresse
+mv SRR34342811_1.fastq.gz S1_R1.fastq.gz #Renomme le fichier de reads forward
+mv SRR34342811_2.fastq.gz S1_R2.fastq.gz #Renomme le fichier de reads reverse</code></pre>
+  </div>
+
+  <div class="section" id="controle-qualite">
+    <h2>5) Contrôle qualité</h2>
+    <h4><a href="https://github.com/s-andrews/FastQC" target="_blank">FastQC</a></h4>
+    <p>FastQC est un outil de contrôle qualité des reads de séquençage.
+
+Il analyse les fichiers .fastq ou .fastq.gz pour détecter :
+
+La <b>qualité des bases (scores Q)</b>, la composition des bases,la présence <b>d’adaptateurs</b> ou de <b>séquences contaminantes</b> et la <b>distribution de la longueur</b> des reads.
+
+Il génère des rapports graphiques et résumés pour identifier rapidement les problèmes avant l’assemblage ou l’alignement.</p>
+    <pre><code># Pour lancer fastQC sur des fichiers spécifiques
+fastqc S1_R1.fastq.gz
+fastqc S1_R2.fastq.gz</code></pre>
+    <pre><code># Pour lancer fastQC sur tous les reads du dossier de travail
+fastqc *fastq.gz</code></pre>
+    <p>Interprétation du rapport fastQC : <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/" target="_blank">Modules d'analyse de FastQC (site officiel)</a></p>
+  <br>
+    <h4><a href="https://github.com/wdecoster/NanoPlot" target="_blank">NanoPlot</a> </h4>
+    <p>NanoPlot est utilisé pour la qualité des reads de type Oxford Nanopore Technologies</p>
+    <pre><code>NanoPlot --fastq S2_R1.fastq.gz --outdir nanoplot_results --plots hex dot</code></pre>   
+    <h4><a href= "https://github.com/MultiQC/MultiQC" target="_blank">MultiQC</a></h4>
+  <p>Outil qui regroupe et résume les rapports de contrôle qualité issus de plusieurs outils (FastQC, fastp, etc.) en un rapport unique interactif, 
+  permettant de visualiser rapidement la qualité de tous les échantillons d’un projet de séquençage.</p>
+  <pre><code>conda activate multiqc
+multiqc .
+conda deactivate</code></pre>
+  </div>
+
+  <div class="section" id="correction-reads">
+    <h2>6) Correction des reads</h2>
+      <h4><a href= "https://github.com/OpenGene/fastp" target="_blank">Fastp</a></h4>
+        <p>
+Fastp est un outil rapide et polyvalent pour le prétraitement des données de séquençage (FASTQ).
+Il effectue le filtrage de qualité, le trimming des adaptateurs,
+et la correction des reads appariés. Fastp génère également des rapports de qualité complets en HTML et JSON.
+  </p>
+    <pre><code>fastp -h #Afficher le manuel d'utilisation de fastp
+fastp -i S1_R1.fastq.gz -I S1_R2.fastq.gz -o trim_S1_R1.fastq.gz -O trim_S1_R2.fastq.gz -f 18 -F 18 -t 18 -T 18 -M 20 --detect_adapter_for_pe --dedup</code></pre>
+    <ul>
+      <li>-i : input read 1</li>
+      <li>-I : input read 2</li>
+      <li>-o : nom de sortie du read1</li>
+      <li>-O : nom de sortie du read2</li>
+      <li>-f : nombre de bases à couper au début de chaque séquence read1</li>
+      <li>-F : nombre de bases à couper au début de chaque séquence read2</li>
+      <li>-t : nombre de bases à couper à la fin de chaque séquence read1</li>
+      <li>-T : nombre de bases à couper à la fin de chaque séquence read2</li>
+      <li>-M : the mean quality requirement</li>
+      <li>--detect_adapter_for_pe : détection automatique des adaptateurs</li>
+      <li>--dedup : supprimer les séquences dupliquées</li>
+    </ul>
+    
+<h4>Suppression des adaptateurs/barcodes des reads ONT</h4>
+<p>Lors du basecalling chez Oxford Nanopore, certains reads très courts ou de faible qualité peuvent être supprimés et les adaptateurs/barcodes retirés si les options correspondantes sont activées.
+Cependant, si des adaptateurs subsistent après le basecalling, ils peuvent être supprimés a posteriori à l’aide d’outils comme Porechop, 
+qui travaillent directement sur les fichiers FASTQ pour effectuer le trimming et la filtration nécessaires avant l’assemblage ou l’analyse.</p>
+
+<pre><code># Activation de l'environnement trimmming
+conda activate trimming
+
+#Installations des logiciels pour le trimming
+conda install -c bioconda porechop filtlong
+
+# Vérifications des installations
+filtlong --version
+porechop --version</code></pre>
+
+<h4><a href="https://github.com/rrwick/Filtlong" target="_blank">Filtlong</a></h4>
+    <p>Outil de filtrage conçu pour sélectionner les meilleurs reads longs (Nanopore ou PacBio) en fonction de leur longueur et de leur qualité. 
+  Il permet de fixer un seuil minimal (taille, score) ou de conserver un pourcentage des reads les plus fiables, afin d’améliorer les étapes d’assemblage ou de correction.</p>
+  <pre><code># Garde uniquement les reads d’au moins 1000 bases et avec une qualité moyenne d’au moins 10
+filtlong --min_length 1000 --min_mean_q 10 S2_R1.fastq.gz | gzip > filtered_S2_R1.fastq.gz</code></pre>
+
+<h4><a href="https://github.com/rrwick/Porechop" target="_blank">Porechop</a></h4>
+<p>Porechop est un outil de trimming et de découpage des reads ONT qui permet de retirer les adaptateurs, les barcodes et les séquences de faible qualité.</p>
+  <pre><code># Supprime les adaptateurs et découpe les reads chimeriques, en produisant un fichier propre
+porechop -i filtered_S2_R1.fastq.gz -o clean_S2_R1.fastq.gz</code></pre>
+
+</div>
+
+  <div class="section" id="assemblage">
+    <h2>7) Assemblage de novo</h2>
+    <h4></h4>
+    <h4><a href="https://github.com/ablab/spades" target="_blank"> SPAdes</a></h4>
+    <p>Logiciel d’assemblage de novo conçu pour les génomes bactériens, qui reconstitue les séquences complètes à partir de reads courts tout en gérant les erreurs et les variations de couverture.</p>
+    <pre><code>spades.py -1 trim_S1_R1.fastq.gz -2 trim_S1_R2.fastq.gz --only-assembler -o S1_assembled</code></pre>
+    <p>
+<ul>
+  <li>-1 : Reads 1</li>
+  <li>-2 : Reads 2 </li>
+  <li> --only-assembler : Assemblage sans étape de correction des reads </li>
+  <li>-o : Nom du dossier de sortie </li>
+</ul>
+    </p>
+    <h4><a href="https://github.com/mikolmogorov/Flye" target="_blank"> Flye</a></h4>
+    <p>Flye est un assembleur de novo spécialement conçu pour les lectures longues issues de technologies comme Oxford Nanopore ou PacBio.</p>
+    <pre><code># Usage
+flye -h 
+flye --nano-raw S2_R1.fastq.gz --out-dir S2_assembled --genome-size 5m --threads 8
+
+# Visualier les premières de l'assemblage 
+head S2_assembled/assembly.fasta 
+
+# Avoir le nombre de contigs
+grep -c "contig" S2_assembled/assembly.fasta</code></pre>
+
+  </div>
+
+  <div class="section" id="identification-espece">
+    <h2>8) Identification de l'espèce</h2>
+    <h4><a href="https://github.com/marbl/Mash" target="_blank">MASH</a></h4>
+    <p>Outil bioinformatique qui permet de comparer rapidement des génomes ou des séquences en utilisant des empreintes (sketches) basées sur les k-mers, 
+afin d’estimer la distance génomique ou la similarité entre organismes sans alignement complet.</p>
+    <pre><code>conda activate amr
+# Création du sketch
+mash sketch S1_assembled/scaffolds.fasta -k 16
+
+# Faire le mash sur plusieurs fichiers fasta
+for i in *.fasta; do; mash sketch $i ; done</code></pre>
+
+<h5>Comparaison avec la base de données de référence : </h5>
+<p>Il faut avant tout télécharger la une base de donnée MASH. Elle sont disponibles <a href="https://mash.readthedocs.io/en/latest/data.html" target="_blank">ici</a></p>
+<pre><code># Télécharger la base de donnée par défaut nommée RefSeqSketchesDefaults.msh.gz 
+wget https://gembox.cbcb.umd.edu/mash/RefSeqSketchesDefaults.msh.gz
+
+#Extraire la base de donnée
+gunzip RefSeqSketchesDefaults.msh.gz
+
+# Renommer le fichier
+mv RefSeqSketchesDefaults.msh refseq.msh</code></pre>
+
+<code><pre># Comparaison avec la base de référence
+mash dist refseq.msh scaffolds.msh > mash_output.csv
+
+# Comparaison pour partir plusieurs fichiers .msh
+for i in *.fasta.msh; do; mash dist refseq.msh $i > dist-$i.csv ; done</code></pre>
+ <p>Identification de la référence la plus proche de notre génome</p>
+<code><pre># Afficher le numéro d'accesion de la référence identifiée la plus proche
+sort -k 3 -i mash_output.csv | head -n 1 | awk '{print $1}'</code></pre>
+    <p></p>
+  </div>
+
+  <div class="section" id="evaluation-assemblage">
+    <h2>9) Évaluation de l'assemblage</h2>
+    <h4><a href="https://github.com/ablab/quast" target="_blank"> QUAST</a></h4>
+    <p>Outil bioinformatique qui évalue la qualité d’un assemblage de génome en fournissant des métriques comme la taille des contigs, le N50, 
+  le nombre de séquences manquantes ou mal assemblées, et permet de comparer différents assemblages entre eux.</p>
+    <pre><code>quast S1_assembled/scaffolds.fasta -1 trim_S1_R1.fastq.gz -2 trim_S1_R2.fastq.gz -o quast_resultats -r S1_ref.fasta</code></pre>
+     <p>
+      <ul>
+      <li>-1 : Reads 1 (non obligatoire)</li>
+      <li>-2 : Reads 2 (non obligatoire)</li>
+      <li>-o : Dossier des résultats </li>
+      <li>-r : Référence au format fasta (non obligatoire)</li>
+      </ul>
+     </p>
+  </div>
+
+  <div class="section" id="contamination">
+    <h2>10) Détection de la contamination avec Kraken2 et Bracken</h2>
+    <h4><a href= "https://github.com/DerrickWood/kraken2" target="_blank">Kraken2</a></h4>
+    <p>outil ultra-rapide de classification taxonomique des séquences génomiques.
+Il utilise une base de données de k-mers pour assigner chaque read à un taxon précis.
+Kraken2 est efficace pour analyser métagénomes et microbiomes à grande échelle.</p>
+<h4><a href= "https://github.com/jenniferlu717/Bracken" target="_blank">Bracken</a></h4>
+<p>Outil complémentaire à Kraken2 pour estimer l’abondance précise des espèces.
+Il réajuste les résultats de Kraken2 pour corriger les biais liés aux reads partagés entre taxons.</p>
+<br>
+<h4>Téléchargement d'une base de donnée kraken</h4>
+<p>Plusieurs bases de données sont disponibles pour l'utilisation de kraken <a href="https://benlangmead.github.io/aws-indexes/k2" target="_blank">ici</a></p>
+<pre><code># Télécharger la base de kraken de 8gb
+wget https://genome-idx.s3.amazonaws.com/kraken/minikraken2_v2_8GB_201904.tgz
+</code></pre>   
+<pre><code># Classification taxonomique avec Kraken2 sur des reads
+kraken2 --db /chemin/vers/kraken_db --paired \
+        trim_S1_R1.fastq.gz trim_S1_R2.fastq.gz \
+        --output kraken.out --report kraken.report
+
+# Classification sur un fichier fasta
+kraken2 --db /chemin/vers/kraken_db --output kraken.out --report kraken.report S1_assembled/scaffolds.fasta
+
+# Estimation des abondances avec Bracken (niveau espèce)
+bracken -d /chemin/vers/kraken_db \
+        -i kraken.report -o bracken.species.report \
+        -l S -r 150</code></pre>
+  </div>
+
+  <div class="section" id="completude">
+    <h2>11) Évaluation de la complétude du génome</h2>
+    <h4><a href="https://github.com/metashot/busco" target="_blank">BUSCO</a></h4>
+    <p>Outil bioinformatique qui évalue la complétude d’un génome ou d’un assemblage en recherchant la présence de gènes universels conservés (Benchmarking Universal Single-Copy Orthologs),
+permettant de déterminer si l’assemblage est complet ou s’il manque des régions importantes.</p>
+    <pre><code># Avec BUSCO
+conda activate busco
+
+# Installation de busco
+conda install -c bioconda busco -y
+
+# Afficher les bases de données disponibles
+busco --list-datasets    
+
+# Lancer l'analyse busco
+busco -i S1_assembled/scaffolds.fasta -o busco -l bacteria_odb10 -m genome
+conda deactivate</code></pre>
+<ul>
+  <li>-i : Fichier fasta en input</li>
+  <li>-o : Nom du dossier de sortie</li>
+  <li>- l : Base de données à utiliser (pour avoir toutes les bases de données faire : busco --list-datasets)</li>
+  <li>- m : Type de sequence (genome; proteins ou transcriptome)</li>
+</ul>
+  </div>
+
+  <div class="section" id="typage">
+    <h2>12) Typage E.coli et Salmonella</h2>
+    <h4><a href="https://github.com/phac-nml/ecoli_serotyping" target="_blank">ECtyper</a></h4>
+    <p>module autonome pour le typage sérologique d'Escherichia coli. Il prend en charge les formats de fichiers FASTA (assemblés) et FASTQ (lectures brutes), 
+      offrant une identification de l'espèce, un typage sérologique O et H, 
+      ainsi que le typage des toxines Shiga.</p>
+    <h4><a href="https://github.com/denglab/SeqSero2" target="_blank">Seqsero2</a></h4>
+    <p>une pipeline pour la prédiction du sérotype de Salmonella à partir de lectures de séquençage brutes ou d'assemblages
+      de génomes.</p>
+    <pre><code># Activer l'environnement ou se trouve ECtyper
+conda activate amr
+
+# Lancer l'analyse de ectyper
+ectyper -i S1_assembled/scaffolds.fasta -o ectyper
+conda deactivate
+
+# Lancer ECtyper sur plusieurs fichiers fasta
+ectyper -i *.fasta -o ectyper
+
+# Activier l'environnement seqsero2
+conda activate seqsero2
+
+# Lancer SeqSero sur des fasta
+SeqSero2_package.py -i salmonella.fasta -m k -t 4
+conda deactivate</code></pre>
+    <p>Pour seqsero2 : (Peut aussi marcher pour les reads)</p>
+    <ul>
+      <li>-i : fichier input fasta</li>
+      <li>-m : recherche k-mer based </li>
+      <li>-t : Type d’entrée attendu (ici génome donc =4) </li>
+    </ul>
+  </div>
+
+  <div class="section" id="abricate-install">
+    <h2>13) Installation de abricate pour recherche de genes de résistance et facteurs de virulence</h2>
+    <h4><a href= "https://github.com/tseemann/abricate" target="_blank">ABRIcate</a></h4>
+    <pre><code>conda activate abricate
+
+# Installation de abricate
+conda install -c bioconda -c conda-forge abricate
+
+# Mise à jour des base de données de abricate
+abricate --setupdb
+
+# Affiche les bases de données de abricate
+abricate --list</code></pre>
+
+    <table>
+      <caption>Bases de données de abricate</caption>
+      <thead>
+        <tr>
+          <th>DATABASE</th>
+          <th>SEQUENCES</th>
+          <th>DBTYPE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>megares</td><td>6635</td><td>nucl</td></tr>
+        <tr><td>card</td><td>2631</td><td>nucl</td></tr>
+        <tr><td>argannot</td><td>22231</td><td>nucl</td></tr>
+        <tr><td>resfinder</td><td>3077</td><td>nucl</td></tr>
+        <tr><td>plasmidfinder</td><td>460</td><td>nucl</td></tr>
+        <tr><td>ncbi</td><td>5386</td><td>nucl</td></tr>
+        <tr><td>ecoli_vf</td><td>2701</td><td>nucl</td></tr>
+        <tr><td>vfdb</td><td>2597</td><td>nucl</td></tr>
+        <tr><td>ecoh</td><td>597</td><td>nucl</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section" id="abricate-analyse">
+    <h2>14) Recherche de gènes de résistance facteurs de virulence et plasmides avec abricate</h2>
+    <pre><code># Lance abricate avec la base de donnée par défaut (ncbi)
+abricate S1_assembled/scaffolds.fasta > abricate.csv
+
+# Lance abricate avec la base de donnée resfinder
+abricate --db resfinder S1_assembled/scaffolds.fasta > abricate.csv
+
+# Lancer abricate sur plusieurs fichiers csv
+abricate --db resfinder *fasta > resfinder.csv
+
+# Lancons abricate sur un souche multirésistante (MDR = Multi Drug Resistant)
+abricate --db resfinder kpneumoniae_mdr.fasta
+
+# Recheche la présence de plasmides
+abricate --db plasmidfinder S1_assembled/scaffolds.fasta
+
+# Lance abricate avec la base vfdb (virulence factors database)
+abricate --db vfdb S1_assembled/scaffolds.fasta > abricate_virulence.csv</code></pre>
+    <ul>
+      <li>--db : spécifie la base de données à utiliser</li>
+      <li>> : permet de rediriger le résultat de sortie vers un fichier</li>
+    </ul>
+  </div>
+
+  <div class="section" id="resfinder">
+    <h2>15) Recherche de gènes de résistance et mutations avec ResFinder</h2>
+    <h4><a href="https://github.com/genomicepidemiology/resfinder" target="_blank">ResFinder</a></h4>
+    <p>ResFinder est un outil de bioinformatique qui détecte les gènes de résistance aux antimicrobiens dans les séquences génomiques, 
+en comparant les  séquences d'ADN aux gènes de résistance connus dans une base de données.</p>
+    <pre><code># Si conflit d'environnement, creer un environnement resfinder :
+conda create -n resfinder -c bioconda -c conda-forge -y
+conda activate resfinder
+
+# Télécharger la base de donnée de Resfinder
+git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder
+
+# Télécharger la base de donnée de Resfinder
+git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
+
+
+# Installer la base de donée de Resfinder
+cd db_resfinder
+python3 INSTALL.py
+
+# Installer la base de donée de Pointfinder
+cd ../db_pointfinder
+python3 INSTALL.py
+
+cd ../
+
+# Analyse Resfinder
+python -m resfinder -ifa S1_assembled/scaffolds.fasta -o resultats_resfinder --point --acquired --species "Klebsiella pneumoniae" -t 80 -l 0.5</code></pre>
+  </div>
+
+  <div class="section" id="mlst">
+    <h2>16) Analyse de la MLST</h2>
+    <h4><a href="https://github.com/tseemann/mlst" target="_blank">MLST</a></h4>
+    <p>Le Multi-Locus Sequence Typing (MLST) est une méthode de typage moléculaire qui analyse plusieurs gènes bien conservés au sein d'une espèce pour identifier les souches bactériennes.</p>
+    <pre><code>conda activate mlst
+# Installer la version 2.23.0 de mlst
+conda install -c bioconda mlst=2.23.0 -y
+
+# Lancer l'analyse de la mlst
+mlst S1_assembled/scaffolds.fasta > mlst.csv
+
+# Lancer l'analyse MLST sur plusieurs fichiers fasta
+mlst *.fasta > mlst.csv
+conda deactivate</code></pre>
+  </div>
+
+  <div class="section" id="exercice1">
+    <h2>Exercice 1</h2>
+    <p>Consigne dans le dossier exercice1 du dossier partagé sur drive</p>
+  </div>
+
+  <div class="section" id="exercice2">
+    <h2>Exercice 2 : Reprendre le workflow bactérien à partir des reads téléchargés</h2>
+    <pre><code>conda activate amr
+
+# Télécharger le fichier SRA avec suivi de progression
+prefetch SRR34342573 --progress
+
+# Extraire les fichiers FASTQ à partir du fichier .sra téléchargé
+fasterq-dump SRR34342573/SRR34342573.sra --split-files --threads 4 --outdir ./
+
+# Supprimer le dossier SRA après extraction
+rm -r SRR34342573
+
+# Compresser les fichiers FASTQ avec gzip
+gzip SRR34342573_1.fastq
+gzip SRR34342573_2.fastq
+conda deactivate</code></pre>
+  </div>
+
+  <div class="section" id="annotation">
+    <h2>18) Annotation du génome</h2>
+    <p>Outil d'annotation complète du génome : <a href="https://bakta.computational.bio/submit" target="_blank">Bakta (site officiel)</a></p>
+  </div>
+
+   <div class="section" id="phylogenie">
+    <h2>19) Analyse phylogénétique</h2>
+    <p>Outil d'analyse phylogénétique : <a href="https://github.com/tseemann/snippy" target="_blank">Snippy</a></p>
+    <pre><code># Installation de snippy et iqtree
+conda create -n phylogeny -c bioconda -c conda-forge snippy iqtree -y
+conda activate phylogeny
+snippy --version
+iqtree --version
+
+mkdir snippy_results
+cd snippy_results
+
+# Creation d'une boucle pour lancer snippy sur plusieurs fichiers fasta
+for f in ./*.fasta; do
+    base=$(basename $f .fasta)
+    snippy --ref reference_tree.fasta --ctgs $f --outdir snippy_$base
+done
+
+# Création de l'alignement des SNPs
+snippy-core --ref reference_tree.fasta --prefix core snippy_*/
+
+# Construction de l'arbre phylogénétique avec IQ-TREE
+iqtree -s core.full.aln -m GTR+G -bb 1000 -nt AUTO
+
+# -s : fichier d'alignement des séquences
+# -m : modèle de substitution (GTR+G est un modèle couramment utilisé)
+# -bb : nombre de réplicats bootstrap pour évaluer la robustesse de l'arbre
+# -nt : nombre de threads à utiliser (AUTO pour utiliser tous les cœurs disponibles)</code></pre>
+
+
+   </div>
+
+  <div class="section" id="docker">
+    <h2>COMMANDES AVEC DOCKER</h2>
+    <h4><a href= "https://www.docker.com/" target="_blank">Docker</a></h4>
+    <p>Docker est une plateforme permettant de créer, déployer et exécuter des applications dans des conteneurs.
+      Un conteneur regroupe tout ce dont une application a besoin (code, bibliothèques, dépendances) pour fonctionner de manière isolée et portable.
+      Docker facilite le déploiement reproductible sur différents systèmes sans conflits de configuration.</p>
+    <h4>Installation de Docker</h4>
+    <pre><code># Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+#Télécharger la dernière version
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+#Ajouter votre user au docker group
+sudo usermod -aG docker $USER
+
+#Changer de groupe actif
+newgrp docker
+</code></pre>
+<h3>MLST avec DOCKER </h3>
+<code><pre>
+# Lancer commande de docker interactif dans le dossier de travail
+docker run -it --rm -v "$PWD":/data staphb/mlst /bin/bash
+mlst fichier.fasta > mlst.csv
+# Taper exit pour sortir du docker !
+</code></pre>
+<h3>ABRIcate avec DOCKER </h3>
+<code><pre># Lancer commande de docker interactif de abricate  dans le dossier de travail
+docker run -it --rm -v $PWD:/data staphb/abricate /bin/bash
+abricate fichier.fasta --db resfinder
+abricate fichier.fasta --db plasmidfinder
+abricate fichier.fasta --db vfdb
+# Taper exit pour sortir du docker !
+</code></pre>
+<h3>QUAST avec DOCKER </h3>
+<code><pre># Lancer commande de docker interactif de quast dans le dossier de travail
+docker run -it --rm -v "$PWD":/data staphb/quast /bin/bash
+
+#Lancer l'analyse de quast
+quast S1_assembled/scaffolds.fasta -1 trim_S1_R1.fastq.gz -2 trim_S1_R2.fastq.gz -o quast_resultats -r S1_ref.fasta
+
+# Taper exit pour sortir du docker !
+</code></pre>
+<h3>BUSCO avec DOCKER </h3>
+<code><pre># Lancer commande de docker interactif de busco dans le dossier de travail
+docker run -it --rm -v $PWD:/data ezlabgva/busco:v5.8.2_cv1 /bin/bash
+
+# Se déplacer dans le repertoire de travail ce n'est pas automatique pour busco !
+cd ../data
+
+#Lancer l'analyse de busco
+busco -i fichier fasta -o busco -l bacteria_odb10 -m genome
+# Taper exit pour sortir du docker !
+</code></pre>
+
+<h3>SEQSERO2 avec DOCKER </h3>
+<code><pre># Lancer commande de docker interactif de SeqSero2 dans le dossier de travail
+docker run -it --rm -v "$PWD":/data staphb/seqsero2 /bin/bash
+
+#Lancer l'analyse de SeqSero
+SeqSero2_package.py -i salmonella.fasta -m k -t 4
+
+# Taper exit pour sortir du docker !
+</code></pre>
+  </div>
+</div>
+
+<script>
+// Fonction pour basculer l'affichage de la sidebar sur mobile
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('active');
+}
+
+// Fonction pour faire défiler vers une section
+function scrollToSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// Gestion du scroll pour mettre en surbrillance l'élément actuel du menu
+window.addEventListener('scroll', function() {
+  const sections = document.querySelectorAll('.section');
+  const menuItems = document.querySelectorAll('.menu-item a');
+  
+  let currentSection = '';
+  
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    
+    if (window.scrollY >= sectionTop - 100) {
+      currentSection = section.getAttribute('id');
+    }
+  });
+  
+  menuItems.forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('href') === '#' + currentSection) {
+      item.classList.add('active');
+    }
+  });
+});
+
+// Fermer la sidebar quand on clique sur un lien (mobile)
+document.querySelectorAll('.menu-item a').forEach(link => {
+  link.addEventListener('click', function() {
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('active');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -35,27 +35,13 @@ Aucune expérience préalable en bioinformatique n'est requise.
 ## Structure du dépôt
 
 ```
-📦 RAM-bioinfo-initiation/
-├── 📄 README.md                  ← Ce fichier
-├── 📄 environment.yml            ← Environnement Conda à installer
-│
-├── 📁 cours/
-│   ├── 01_introduction_RAM.md    ← Contexte scientifique et clinique
-│   ├── 02_terminal_linux.md      ← Bases du terminal
-│   ├── 03_qualite_reads.md       ← FastQC, fastp, MultiQC
-│   ├── 04_assemblage.md          ← SPAdes, QUAST, BUSCO
-│   ├── 05_annotation.md          ← Prokka / Bakta
-│   ├── 06_detection_RAM.md       ← AMRFinderPlus
-│   └── 07_typage.md              ← MLST, ECTyper
-│
-├── 📁 tp/
-│   ├── TP1_qualite.md            ← Travaux pratiques guidés
-│   ├── TP2_assemblage.md
-│   ├── TP3_RAM.md
-│   └── solutions/                ← Corrigés (accès réservé)
-│
-└── 📁 data/
-    └── README_data.md            ← Instructions pour télécharger les données
+RAM-bioinfo-initiation/
+├──README.md                  ← Ce fichier
+├──environment.yml            ← Environnement Conda à installer
+├──workflow.html              ← Etapes de l'analyse bioinformatique
+├──cours/
+└──data/
+    └── README_data.md        ← Instructions pour télécharger les données
 ```
 
 ---
@@ -73,8 +59,8 @@ Aucune expérience préalable en bioinformatique n'est requise.
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/<votre-nom-utilisateur>/RAM-bioinfo-initiation.git
-cd RAM-bioinfo-initiation
+git clone https://github.com/Osadio95/Formation-Bioinformatic-G2B.git
+cd Formation-Bioinformatic-G2B
 
 # 2. Créer l'environnement Conda
 conda env create -f environment.yml

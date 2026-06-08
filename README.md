@@ -66,12 +66,21 @@ cd Formation-Bioinformatic-G2B
 conda env create -f environment.yml
 
 # 3. Activer l'environnement
-conda activate bioinfo
+conda activate bioinformatic
 
 # 4. Vérifier l'installation
 fastqc --version
 spades.py --version
 amrfinder --version
+fastp --version
+multiqc --version
+prefetch --version
+mash --version |
+quast --version
+busco --version
+amrfinderplus --version
+mlst --version
+ectyper --version
 ```
 
 > La création de l'environnement peut prendre 15 à 30 minutes selon votre connexion.
@@ -90,11 +99,10 @@ amrfinder --version
 | `spades` | Assemblage de génomes bactériens | Assemblage |
 | `quast` | Statistiques d'assemblage (N50, etc.) | Évaluation |
 | `busco` | Complétude de l'assemblage | Évaluation |
-| `prokka` / `bakta` | Annotation fonctionnelle du génome | Annotation |
+| `abricate`| Détection des genes de résistances, virulence et réplicons plasmidiques | Annotation |
 | `amrfinderplus` | Détection de gènes de résistance | Analyse RAM |
 | `mlst` | Typage Multi-Locus Sequence Typing | Typage |
 | `ectyper` | Sérotypage de *E. coli* | Typage |
-| `bwa` + `samtools` | Alignement et traitement des lectures | Alignement |
 
 ---
 

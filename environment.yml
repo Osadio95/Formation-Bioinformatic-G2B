@@ -27,6 +27,7 @@ dependencies:
   # ─── Typage et caractérisation des bactéries ────────────────────────────────
   - mlst                 # Typage MLST (Multi-Locus Sequence Typing)
   - ectyper              # Sérotypage de E. coli (antigènes O et H)
+  - abricate             # Replicon plasmidiques, genes de resitances, virulences
 
   # ─── Résistance aux antimicrobiens ──────────────────────────────────────────
-  - amrfinderplus        # Détection de gènes de résistance (base NCBI AMRFinder)
+  - ncbi-amrfinderplus        # Détection de gènes de résistance (base NCBI AMRFinder)

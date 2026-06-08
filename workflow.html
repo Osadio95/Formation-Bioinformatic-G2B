@@ -427,21 +427,13 @@ grep -c "contig" S2_assembled/assembly.fasta</code></pre>
 afin d’estimer la distance génomique ou la similarité entre organismes sans alignement complet.</p>
     <pre><code>conda activate amr
 # Création du sketch
-mash sketch S1_assembled/scaffolds.fasta -k 16
+mash sketch S1_assembled/scaffolds.fasta
 
 # Faire le mash sur plusieurs fichiers fasta
 for i in *.fasta; do; mash sketch $i ; done</code></pre>
 
 <h5>Comparaison avec la base de données de référence : </h5>
-<p>Il faut avant tout télécharger la une base de donnée MASH. Elle sont disponibles <a href="https://mash.readthedocs.io/en/latest/data.html" target="_blank">ici</a></p>
-<pre><code># Télécharger la base de donnée par défaut nommée RefSeqSketchesDefaults.msh.gz 
-wget https://gembox.cbcb.umd.edu/mash/RefSeqSketchesDefaults.msh.gz
-
-#Extraire la base de donnée
-gunzip RefSeqSketchesDefaults.msh.gz
-
-# Renommer le fichier
-mv RefSeqSketchesDefaults.msh refseq.msh</code></pre>
+<p>Il faut avant tout télécharger la une base de donnée MASH (déjà fournie dans le repo). Elles sont disponibles <a href="https://mash.readthedocs.io/en/latest/data.html" target="_blank">ici</a>.</p>
 
 <code><pre># Comparaison avec la base de référence
 mash dist refseq.msh scaffolds.msh > mash_output.csv

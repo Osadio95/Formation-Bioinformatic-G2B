@@ -40,8 +40,6 @@ RAM-bioinfo-initiation/
 ├──environment.yml            ← Environnement Conda à installer
 ├──workflow.html              ← Etapes de l'analyse bioinformatique
 ├──cours/
-└──data/
-    └── README_data.md        ← Instructions pour télécharger les données
 ```
 
 ---

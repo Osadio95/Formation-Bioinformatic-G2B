@@ -8,6 +8,7 @@
 ## Description du cours
 
 Ce cours vous introduit à l'utilisation des outils bioinformatiques pour l'étude de la **résistance aux antimicrobiens (RAM)**
+
 À travers des exercices guidés, vous apprendrez à :
 
 - Récupérer et contrôler la qualité de données génomiques bactériennes
@@ -19,7 +20,6 @@ Ce cours vous introduit à l'utilisation des outils bioinformatiques pour l'étu
 Aucune expérience préalable en bioinformatique n'est requise.
 
 ---
-
 ## Objectifs pédagogiques
 
 À la fin de ce cours, l'étudiant sera capable de :
@@ -35,7 +35,7 @@ Aucune expérience préalable en bioinformatique n'est requise.
 ## Structure du dépôt
 
 ```
-RAM-bioinfo-initiation/
+Formation-Bioinformatic-G2B/
 ├──README.md                  ← Ce fichier
 ├──environment.yml            ← Environnement Conda à installer
 ├──workflow.html              ← Etapes de l'analyse bioinformatique
@@ -79,6 +79,7 @@ busco --version
 amrfinderplus --version
 mlst --version
 ectyper --version
+abricate --version
 ```
 
 > La création de l'environnement peut prendre 15 à 30 minutes selon votre connexion.

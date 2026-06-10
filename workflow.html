@@ -450,7 +450,12 @@ sort -k 3 -i mash_S1_output.csv | head -n 1 | awk '{print $1}'</code></pre>
     <h4><a href="https://github.com/ablab/quast" target="_blank"> QUAST</a></h4>
     <p>Outil bioinformatique qui évalue la qualité d’un assemblage de génome en fournissant des métriques comme la taille des contigs, le N50, 
   le nombre de séquences manquantes ou mal assemblées, et permet de comparer différents assemblages entre eux.</p>
-    <pre><code>quast S1_assembled/scaffolds.fasta -1 trim_S1_R1.fastq.gz -2 trim_S1_R2.fastq.gz -o quast_resultats -r S1_ref.fasta</code></pre>
+    <pre><code>#Commande QUAST pour les reads Illumina
+      quast S1_assembled/scaffolds.fasta -1 trim_S1_R1.fastq.gz -2 trim_S1_R2.fastq.gz -o quast_S1 -r S1_ref.fasta
+
+      #Commande QUAST pour les reads Nanopore
+      quast S2_assembled/assembly.fasta --nanopore clean_S2_R1.fastq.gz -o quast_S2 -r S2_ref.fasta
+    </code></pre>
      <p>
       <ul>
       <li>-1 : Reads 1 (non obligatoire)</li>

@@ -16,6 +16,8 @@ dependencies:
 
   # ─── Téléchargement de données (NCBI SRA) ────────────────────────────────────
   - sra-tools       # prefetch, fastq-dump, fasterq-dump
+  - openssl
+  - ca-certificates
 
   # ─── Estimation / distance entre génomes ────────────────────────────────────
   - mash            # Comparaison rapide de génomes

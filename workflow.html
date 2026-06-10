@@ -303,20 +303,11 @@ flye --version
 
   <div class="section" id="get-reads">
     <h2>4b) Téléchargement des reads depuis Sequence Reads Archive (SRA)</h2>
-    <pre><code> #Télécharger les reads Illumina depuis SRA
-prefetch SRR34342811
-fastq-dump --gzip --split-files SRR34342811/SRR34342811.sra #Désapparie les reads et les compresse
-mv SRR34342811_1.fastq.gz S1_R1.fastq.gz #Renomme le fichier de reads forward
-mv SRR34342811_2.fastq.gz S1_R2.fastq.gz #Renomme le fichier de reads reverse
-
-# Télécharger le read Nanopore depuis SRA
-prefetch SRR39085853
-
-# Convertir le fichier SRA en FASTQ compressé
-fastq-dump --gzip SRR39085853/SRR39085853.sra
-
-# Renommer le fichier
-mv SRR39085853.fastq.gz S2_R1.fastq.gz	
+    <pre><code> #Télécharger les reads 
+wget -O data.zip "https://zenodo.org/api/records/20627702/files-archive"
+unzip data.zip
+ls
+mv *.fastq.gz .	
 </code></pre>
   </div>
 
@@ -345,7 +336,7 @@ fastqc *fastq.gz</code></pre>
   permettant de visualiser rapidement la qualité de tous les échantillons d’un projet de séquençage.</p>
   <pre><code>#Lancer le multiqc dans le repertoire courant
 multiqc .
-conda deactivate</code></pre>
+</code></pre>
   </div>
 
   <div class="section" id="correction-reads">
@@ -408,7 +399,7 @@ porechop -i filtered_S2_R1.fastq.gz -o clean_S2_R1.fastq.gz</code></pre>
     <p>Flye est un assembleur de novo spécialement conçu pour les lectures longues issues de technologies comme Oxford Nanopore ou PacBio.</p>
     <pre><code># Usage
 flye -h 
-flye --nano-raw S2_R1.fastq.gz --out-dir S2_assembled --genome-size 5m --threads 8
+flye --nano-raw clean_S2_R1.fastq.gz --out-dir S2_assembled --genome-size 5m --threads 8
 
 # Visualier les premières de l'assemblage 
 head S2_assembled/assembly.fasta 
@@ -425,7 +416,8 @@ grep -c "contig" S2_assembled/assembly.fasta</code></pre>
 afin d’estimer la distance génomique ou la similarité entre organismes sans alignement complet.</p>
     <pre><code>
 # Création du sketch
-mash sketch S1_assembled/scaffolds.fasta
+mash sketch S1_assembled/scaffolds.fasta -o S1
+mash sketch S2_assembled/assembly.fasta -o S2
 
 # Faire le mash sur plusieurs fichiers fasta
 for i in *.fasta; do; mash sketch $i ; done</code></pre>
@@ -442,13 +434,15 @@ gunzip RefSeqSketchesDefaults.msh.gz
 mv RefSeqSketchesDefaults.msh refseq.msh</code></pre>
 
 <code><pre># Comparaison avec la base de référence
-mash dist refseq.msh scaffolds.msh > mash_output.csv
+mash dist refseq.msh S1.msh > mash_S1_output.csv
+mash dist refseq.msh S2.msh > mash_S2_output.csv
+
 
 # Comparaison pour partir plusieurs fichiers .msh
 for i in *.fasta.msh; do; mash dist refseq.msh $i > dist-$i.csv ; done</code></pre>
  <p>Identification de la référence la plus proche de notre génome</p>
 <code><pre># Afficher le numéro d'accesion de la référence identifiée la plus proche
-sort -k 3 -i mash_output.csv | head -n 1 | awk '{print $1}'</code></pre>
+sort -k 3 -i mash_S1_output.csv | head -n 1 | awk '{print $1}'</code></pre>
     <p></p>
   </div>
 
@@ -608,17 +602,29 @@ abricate --db vfdb S1_assembled/scaffolds.fasta > abricate_virulence.csv</code><
 	les gènes de virulence ainsi que certaines mutations chromosomiques associées à la résistance,
 	à partir de séquences génomiques.</p>
     <pre><code># Lancer AMRFinderPlus sur un assemblage
+#Mettre a jour la base de donnees
+amrfinder --update   
+
+#Liste des organismes avec mutations connues
+amrfinder --list_organisms
+
+#Lancer la recherche de mutations et genes de resistances    
 amrfinder -n S1_assembled/scaffolds.fasta \
-          -o resultats_amrfinder.tsv \
-          --organism Escherichia coli</code></pre>
+          -o S1_amrfinder.tsv \
+          --organism Escherichia
+          
+#Lancer la recherche de mutations et genes de resistances    
+amrfinder -n S2_assembled/assembly.fasta \
+          -o S2_amrfinder.tsv \
+          --organism Salmonella          
+          </code></pre>
   </div>
 
   <div class="section" id="mlst">
     <h2>16) Analyse de la MLST</h2>
     <h4><a href="https://github.com/tseemann/mlst" target="_blank">MLST</a></h4>
     <p>Le Multi-Locus Sequence Typing (MLST) est une méthode de typage moléculaire qui analyse plusieurs gènes bien conservés au sein d'une espèce pour identifier les souches bactériennes.</p>
-    <pre><code>
-# Lancer l'analyse de la mlst
+    <pre><code># Lancer l'analyse de la mlst
 mlst S1_assembled/scaffolds.fasta > mlst.csv
 
 # Lancer l'analyse MLST sur plusieurs fichiers fasta

@@ -80,6 +80,9 @@ amrfinderplus --version
 mlst --version
 ectyper --version
 abricate --version
+
+#.5  Datasets
+Datasets disponibles sur Zenodo : https://zenodo.org/records/20627702
 ```
 
 > La création de l'environnement peut prendre 15 à 30 minutes selon votre connexion.

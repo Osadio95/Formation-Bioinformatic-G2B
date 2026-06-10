@@ -51,7 +51,6 @@ Formation-Bioinformatic-G2B/
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html) ou [Anaconda](https://www.anaconda.com/) installé
 - Système Linux ou macOS (ou WSL2 sous Windows)
 - Connexion internet
-- 
 
 ### Étapes d'installation
 
@@ -146,7 +145,7 @@ Données brutes (FASTQ)
 Nous travaillons sur des génomes de bactéries pathogènes disponibles publiquement sur **NCBI SRA** :
 
 - *Escherichia coli* (entérobactérie, modèle d'étude de la RAM)
-- *Salmonella enterica* (pathogène hospitalier multirésistant)
+- *Salmonella enterica* (pathogène entérique et important agent de toxi-infections alimentaires)
 
 ---
 

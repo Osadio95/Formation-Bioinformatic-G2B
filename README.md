@@ -1,7 +1,7 @@
 # Initiation à la Résistance aux Antimicrobiens (RAM) par la Bioinformatique
 
-> Cours pratique destiné aux étudiants de **1ère année de Génie Biologique et Biotechnologies à l'ESP**  
-> Niveau : débutant | Langage : ligne de commande Linux + Python
+> Cours pratique destiné aux étudiants de **1ère année de Génie Biologique et Biotechnologies à l'Ecole Supérieure Polytechnique**  
+> Niveau : débutant | Langage : ligne de commande Linuxm+ bash
 
 ---
 
@@ -11,10 +11,11 @@ Ce cours vous introduit à l'utilisation des outils bioinformatiques pour l'étu
 
 À travers des exercices guidés, vous apprendrez à :
 
-- Récupérer et contrôler la qualité de données génomiques bactériennes
+- Récupérer et contrôler la qualité de données génomiques bactériennes 
 - Assembler un génome bactérien à partir de lectures courtes/longues (*short reads*)
-- Évaluer la qualité de l'assemblage
-- Identifier des gènes de résistance aux antibiotiques
+- Identifier l'espèce bacterienne
+- Évaluer la qualité de l'assemblage (contigs, N50, profondeur, GC%, completude, contamination,...)
+- Identifier des gènes de résistance aux antibiotiques et mutations
 - Typer et caractériser des souches bactériennes pathogènes
 
 Aucune expérience préalable en bioinformatique n'est requise.
@@ -24,12 +25,11 @@ Aucune expérience préalable en bioinformatique n'est requise.
 
 À la fin de ce cours, l'étudiant sera capable de :
 
-1. Expliquer ce qu'est la RAM et pourquoi elle constitue un enjeu de santé publique
-2. Naviguer dans un terminal Linux et exécuter des commandes de base
-3. Mettre en place un environnement Conda reproductible
-4. Exécuter un pipeline bioinformatique complet d'analyse de génome bactérien
-5. Interpréter les résultats des outils de détection de gènes de résistance
-6. Situer les résultats dans un contexte biologique et clinique
+1. Naviguer dans un terminal Linux et exécuter des commandes de base
+2. Mettre en place un environnement Conda reproductible
+3. Exécuter un pipeline bioinformatique complet d'analyse de génome bactérien
+4. Interpréter les résultats des outils de détection de gènes de résistance
+5. Situer les résultats dans un contexte biologique et clinique
 ---
 
 ## Structure du dépôt
@@ -39,9 +39,9 @@ Formation-Bioinformatic-G2B/
 ├──README.md                  ← Ce fichier
 ├──environment.yml            ← Environnement Conda à installer
 ├──workflow.html              ← Etapes de l'analyse bioinformatique
+├──S1_ref.fasta               ← Fichier fasta de référence
 ├──cours/
 ```
-
 ---
 
 ## Installation de l'environnement
@@ -73,7 +73,7 @@ amrfinder --version
 fastp --version
 multiqc --version
 prefetch --version
-mash --version |
+mash --version 
 quast --version
 busco --version
 amrfinderplus --version

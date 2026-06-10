@@ -7,27 +7,31 @@ channels:
 
 dependencies:
   # ─── Contrôle qualité des lectures ───────────────────────────────────────────
-  - fastqc               # Rapport qualité des fichiers FASTQ
-  - fastp                # Trimming et filtrage des lectures (remplace Trimmomatic)
-  - multiqc              # Agrège les rapports FastQC / fastp en un seul rapport HTML
+  - fastqc          # Rapport qualité des fichiers FASTQ
+  - fastp           # Trimming et filtrage des lectures
+  - multiqc         # Agrège les rapports FastQC / fastp
+  - porechop        # Trimming nanopore des adaptateurs
+  - filtlong        # Filtrage nanopore selon la taille
+  - NanoPlot        # Rapport de qualite des Fastq Nanopore
 
   # ─── Téléchargement de données (NCBI SRA) ────────────────────────────────────
-  - sra-tools            # Contient prefetch, fastq-dump, fasterq-dump
+  - sra-tools       # prefetch, fastq-dump, fasterq-dump
 
   # ─── Estimation / distance entre génomes ────────────────────────────────────
-  - mash                 # Comparaison rapide de génomes par sketching MinHash
+  - mash            # Comparaison rapide de génomes
 
   # ─── Assemblage de génome ────────────────────────────────────────────────────
-  - spades               # Assembleur de génomes (bactéries, virus, métagénomes)
+  - spades          # Assembleur Illumina
+  - flye            # Assembleur Nanopore
 
   # ─── Évaluation de l'assemblage ─────────────────────────────────────────────
-  - quast                # Statistiques d'assemblage (N50, contigs, etc.)
-  - busco                # Complétude de l'assemblage via gènes universels
+  - quast           # Qualité d’assemblage
+  - busco           # Complétude génomique
 
   # ─── Typage et caractérisation des bactéries ────────────────────────────────
-  - mlst                 # Typage MLST (Multi-Locus Sequence Typing)
-  - ectyper              # Sérotypage de E. coli (antigènes O et H)
-  - abricate             # Replicon plasmidiques, genes de resitances, virulences
+  - mlst            # Typage MLST
+  - ectyper         # Sérotypage E. coli
+  - abricate        # Résistances, plasmides, virulence
 
   # ─── Résistance aux antimicrobiens ──────────────────────────────────────────
-  - ncbi-amrfinderplus        # Détection de gènes de résistance (base NCBI AMRFinder)
+  - ncbi-amrfinderplus  # Gènes de résistance AMR

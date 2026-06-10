@@ -208,7 +208,7 @@
   <div class="menu-item"><a href="#typage">12) Typage E.coli et Salmonella</a></div>
   <div class="menu-item"><a href="#abricate-install">13) Installation de abricate</a></div>
   <div class="menu-item"><a href="#abricate-analyse">14) Recherche avec abricate</a></div>
-  <div class="menu-item"><a href="#resfinder">15) Recherche avec ResFinder</a></div>
+  <div class="menu-item"><a href="#amrfinder">15) Recherche avec AMRFinderPlus</a></div>
   <div class="menu-item"><a href="#mlst">16) Analyse de la MLST</a></div>
   <div class="menu-item"><a href="#exercice1">Exercice 1</a></div>
   <div class="menu-item"><a href="#exercice2">Exercice 2</a></div>
@@ -265,51 +265,59 @@ bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
   </div>
 
   <div class="section" id="conda-env">
-    <h2>3) Créer un environnement conda</h2>
-    <pre><code>conda create -n amr -c bioconda -c conda-forge -y
-conda create -n trimming python=3.12 -y
-conda create -n busco -c bioconda -c conda-forge -y
-conda create -n abricate -c bioconda -c conda-forge -y
-conda create -n mlst -c bioconda -c conda-forge -y
-conda create -n seqsero2 -c bioconda -c conda-forge seqsero2=1.3.1 -y
-conda create -n multiqc -c bioconda -c conda-forge multiqc=1.30 -y</code></pre>
+    <h2>3) Creation de l'environnement conda</h2>
+    <pre><code> conda env create -f environment.yml</code></pre>
 <p>Tous les logiciels ne peuvent pas fonctionner dans un seul environnement fait de conflits entre eux.</p>
     <ul>
-      <li>conda create : Permet de créer un environnement conda</li>
-      <li>-n : donne le nom de l'environnement</li>
-      <li>-c : ajoute un channel dans l'environnement</li>
-      <li>-y : répondre "yes" à tout</li>
+      <li>conda env create : Permet de créer un environnement conda</li>
+      <li>-f : creer un environnement a partir d'un fichier .yml</li>
     </ul>
   </div>
 
   <div class="section" id="outils-bioinfo">
-    <h2>4) Installer les outils bioinfo</h2>
-    <pre><code># Active l'environnement amr
-conda activate amr
+    <h2>4) Tester l'installation des outils</h2>
+    <pre><code># Active l'environnement bioninformatic
+conda activate bioinformatic
 
-# Installe les logiciels avec des versions spécifiques
-conda install -c bioconda -c conda-forge fastp=1.0.1 mash=2.3 nanoplot=1.44.1 resfinder sra-tools=3.2.1 ectyper=2.0.0 -y 
-
-# Vérification des installations
-fastp --version #vérifie la version de fastp
-mash --version #vérifie l'installation de mash
-NanoPlot --version #vérifie l'installation de NanoPlot
-ectyper --version #vérifie l'installation de ecytper
-prefetch --version #vérifie l'installation de sra-tools
-python -m resfinder --version  #vérifie l'installation de resfinder
-
-# Désactive l'environnement amr
-conda deactivate</code></pre>
-<p> Il faut au préalable activer l'environnement conda dans lequel vous avez installé le logiciel</p>
+# 4. Vérifier l'installation
+fastqc --version
+spades.py --version
+amrfinder --version
+fastp --version
+multiqc --version
+prefetch --version
+mash --version
+quast --version
+busco --version
+amrfinder --version
+mlst --version
+ectyper --version
+abricate --version
+porechop --version
+filtlong --version
+flye --version
+</code></pre>
+<p> Il faut au préalable activer l'environnement conda dans lequel vous avez installé les outils</p>
   </div>
 
 
   <div class="section" id="get-reads">
     <h2>4b) Téléchargement des reads depuis Sequence Reads Archive (SRA)</h2>
-    <pre><code>prefetch SRR34342811 #Télécharger les fichiers depuis SRA
+    <pre><code> #Télécharger les reads Illumina depuis SRA
+prefetch SRR34342811
 fastq-dump --gzip --split-files SRR34342811/SRR34342811.sra #Désapparie les reads et les compresse
 mv SRR34342811_1.fastq.gz S1_R1.fastq.gz #Renomme le fichier de reads forward
-mv SRR34342811_2.fastq.gz S1_R2.fastq.gz #Renomme le fichier de reads reverse</code></pre>
+mv SRR34342811_2.fastq.gz S1_R2.fastq.gz #Renomme le fichier de reads reverse
+
+# Télécharger le read Nanopore depuis SRA
+prefetch SRR39085853
+
+# Convertir le fichier SRA en FASTQ compressé
+fastq-dump --gzip SRR39085853/SRR39085853.sra
+
+# Renommer le fichier
+mv SRR39085853.fastq.gz S2_R1.fastq.gz	
+</code></pre>
   </div>
 
   <div class="section" id="controle-qualite">
@@ -335,7 +343,7 @@ fastqc *fastq.gz</code></pre>
     <h4><a href= "https://github.com/MultiQC/MultiQC" target="_blank">MultiQC</a></h4>
   <p>Outil qui regroupe et résume les rapports de contrôle qualité issus de plusieurs outils (FastQC, fastp, etc.) en un rapport unique interactif, 
   permettant de visualiser rapidement la qualité de tous les échantillons d’un projet de séquençage.</p>
-  <pre><code>conda activate multiqc
+  <pre><code>#Lancer le multiqc dans le repertoire courant
 multiqc .
 conda deactivate</code></pre>
   </div>
@@ -368,16 +376,6 @@ fastp -i S1_R1.fastq.gz -I S1_R2.fastq.gz -o trim_S1_R1.fastq.gz -O trim_S1_R2.f
 <p>Lors du basecalling chez Oxford Nanopore, certains reads très courts ou de faible qualité peuvent être supprimés et les adaptateurs/barcodes retirés si les options correspondantes sont activées.
 Cependant, si des adaptateurs subsistent après le basecalling, ils peuvent être supprimés a posteriori à l’aide d’outils comme Porechop, 
 qui travaillent directement sur les fichiers FASTQ pour effectuer le trimming et la filtration nécessaires avant l’assemblage ou l’analyse.</p>
-
-<pre><code># Activation de l'environnement trimmming
-conda activate trimming
-
-#Installations des logiciels pour le trimming
-conda install -c bioconda porechop filtlong
-
-# Vérifications des installations
-filtlong --version
-porechop --version</code></pre>
 
 <h4><a href="https://github.com/rrwick/Filtlong" target="_blank">Filtlong</a></h4>
     <p>Outil de filtrage conçu pour sélectionner les meilleurs reads longs (Nanopore ou PacBio) en fonction de leur longueur et de leur qualité. 
@@ -425,7 +423,7 @@ grep -c "contig" S2_assembled/assembly.fasta</code></pre>
     <h4><a href="https://github.com/marbl/Mash" target="_blank">MASH</a></h4>
     <p>Outil bioinformatique qui permet de comparer rapidement des génomes ou des séquences en utilisant des empreintes (sketches) basées sur les k-mers, 
 afin d’estimer la distance génomique ou la similarité entre organismes sans alignement complet.</p>
-    <pre><code>conda activate amr
+    <pre><code>
 # Création du sketch
 mash sketch S1_assembled/scaffolds.fasta
 
@@ -504,18 +502,12 @@ bracken -d /chemin/vers/kraken_db \
     <h4><a href="https://github.com/metashot/busco" target="_blank">BUSCO</a></h4>
     <p>Outil bioinformatique qui évalue la complétude d’un génome ou d’un assemblage en recherchant la présence de gènes universels conservés (Benchmarking Universal Single-Copy Orthologs),
 permettant de déterminer si l’assemblage est complet ou s’il manque des régions importantes.</p>
-    <pre><code># Avec BUSCO
-conda activate busco
-
-# Installation de busco
-conda install -c bioconda busco -y
-
+    <pre><code>
 # Afficher les bases de données disponibles
 busco --list-datasets    
 
 # Lancer l'analyse busco
-busco -i S1_assembled/scaffolds.fasta -o busco -l bacteria_odb10 -m genome
-conda deactivate</code></pre>
+busco -i S1_assembled/scaffolds.fasta -o busco -l bacteria_odb10 -m genome</code></pre>
 <ul>
   <li>-i : Fichier fasta en input</li>
   <li>-o : Nom du dossier de sortie</li>
@@ -527,18 +519,13 @@ conda deactivate</code></pre>
   <div class="section" id="typage">
     <h2>12) Typage E.coli et Salmonella</h2>
     <h4><a href="https://github.com/phac-nml/ecoli_serotyping" target="_blank">ECtyper</a></h4>
-    <p>module autonome pour le typage sérologique d'Escherichia coli. Il prend en charge les formats de fichiers FASTA (assemblés) et FASTQ (lectures brutes), 
-      offrant une identification de l'espèce, un typage sérologique O et H, 
-      ainsi que le typage des toxines Shiga.</p>
+    <p>module autonome pour le typage sérologique d'Escherichia coli. Il prend en charge les formats de fichiers FASTA (assemblés) et FASTQ (lectures brutes), offrant une identification de l'espèce, un typage sérologique O et H,  ainsi que le typage des toxines Shiga.</p>
     <h4><a href="https://github.com/denglab/SeqSero2" target="_blank">Seqsero2</a></h4>
     <p>une pipeline pour la prédiction du sérotype de Salmonella à partir de lectures de séquençage brutes ou d'assemblages
       de génomes.</p>
-    <pre><code># Activer l'environnement ou se trouve ECtyper
-conda activate amr
-
+    <pre><code>#
 # Lancer l'analyse de ectyper
 ectyper -i S1_assembled/scaffolds.fasta -o ectyper
-conda deactivate
 
 # Lancer ECtyper sur plusieurs fichiers fasta
 ectyper -i *.fasta -o ectyper
@@ -560,12 +547,7 @@ conda deactivate</code></pre>
   <div class="section" id="abricate-install">
     <h2>13) Installation de abricate pour recherche de genes de résistance et facteurs de virulence</h2>
     <h4><a href= "https://github.com/tseemann/abricate" target="_blank">ABRIcate</a></h4>
-    <pre><code>conda activate abricate
-
-# Installation de abricate
-conda install -c bioconda -c conda-forge abricate
-
-# Mise à jour des base de données de abricate
+    <pre><code># Mise à jour des base de données de abricate
 abricate --setupdb
 
 # Affiche les bases de données de abricate
@@ -619,50 +601,29 @@ abricate --db vfdb S1_assembled/scaffolds.fasta > abricate_virulence.csv</code><
     </ul>
   </div>
 
-  <div class="section" id="resfinder">
-    <h2>15) Recherche de gènes de résistance et mutations avec ResFinder</h2>
-    <h4><a href="https://github.com/genomicepidemiology/resfinder" target="_blank">ResFinder</a></h4>
-    <p>ResFinder est un outil de bioinformatique qui détecte les gènes de résistance aux antimicrobiens dans les séquences génomiques, 
-en comparant les  séquences d'ADN aux gènes de résistance connus dans une base de données.</p>
-    <pre><code># Si conflit d'environnement, creer un environnement resfinder :
-conda create -n resfinder -c bioconda -c conda-forge -y
-conda activate resfinder
-
-# Télécharger la base de donnée de Resfinder
-git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git db_resfinder
-
-# Télécharger la base de donnée de Resfinder
-git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git db_pointfinder
-
-
-# Installer la base de donée de Resfinder
-cd db_resfinder
-python3 INSTALL.py
-
-# Installer la base de donée de Pointfinder
-cd ../db_pointfinder
-python3 INSTALL.py
-
-cd ../
-
-# Analyse Resfinder
-python -m resfinder -ifa S1_assembled/scaffolds.fasta -o resultats_resfinder --point --acquired --species "Klebsiella pneumoniae" -t 80 -l 0.5</code></pre>
+  <div class="section" id="amrfinder">
+    <h2>15) Recherche de gènes de résistance et mutations avec AMRFinder</h2>
+    <h4><a href="https://www.ncbi.nlm.nih.gov/pathogens/antimicrobial-resistance/" target="_blank">AMRFinderPlus (NCBI)</a></h4>
+    <p>AMRFinderPlus est un outil développé par le NCBI qui permet d’identifier les gènes de résistance aux antimicrobiens,
+	les gènes de virulence ainsi que certaines mutations chromosomiques associées à la résistance,
+	à partir de séquences génomiques.</p>
+    <pre><code># Lancer AMRFinderPlus sur un assemblage
+amrfinder -n S1_assembled/scaffolds.fasta \
+          -o resultats_amrfinder.tsv \
+          --organism Escherichia coli</code></pre>
   </div>
 
   <div class="section" id="mlst">
     <h2>16) Analyse de la MLST</h2>
     <h4><a href="https://github.com/tseemann/mlst" target="_blank">MLST</a></h4>
     <p>Le Multi-Locus Sequence Typing (MLST) est une méthode de typage moléculaire qui analyse plusieurs gènes bien conservés au sein d'une espèce pour identifier les souches bactériennes.</p>
-    <pre><code>conda activate mlst
-# Installer la version 2.23.0 de mlst
-conda install -c bioconda mlst=2.23.0 -y
-
+    <pre><code>
 # Lancer l'analyse de la mlst
 mlst S1_assembled/scaffolds.fasta > mlst.csv
 
 # Lancer l'analyse MLST sur plusieurs fichiers fasta
 mlst *.fasta > mlst.csv
-conda deactivate</code></pre>
+</code></pre>
   </div>
 
   <div class="section" id="exercice1">
@@ -672,8 +633,7 @@ conda deactivate</code></pre>
 
   <div class="section" id="exercice2">
     <h2>Exercice 2 : Reprendre le workflow bactérien à partir des reads téléchargés</h2>
-    <pre><code>conda activate amr
-
+    <pre><code>
 # Télécharger le fichier SRA avec suivi de progression
 prefetch SRR34342573 --progress
 

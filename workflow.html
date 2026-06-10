@@ -479,15 +479,18 @@ Il réajuste les résultats de Kraken2 pour corriger les biais liés aux reads p
 <h4>Téléchargement d'une base de donnée kraken</h4>
 <p>Plusieurs bases de données sont disponibles pour l'utilisation de kraken <a href="https://benlangmead.github.io/aws-indexes/k2" target="_blank">ici</a></p>
 <pre><code># Télécharger la base de kraken de 8gb
-wget https://genome-idx.s3.amazonaws.com/kraken/minikraken2_v2_8GB_201904.tgz
-</code></pre>   
+wget -O kdb.tgz https://genome-idx.s3.amazonaws.com/kraken/minikraken2_v2_8GB_201904.tgz
+
+#Extraire la base de donnée
+tar -xvzf kdb_8GB.tgz</code></pre>
+<h4>Lancer analyse de Kraken2</h4>
 <pre><code># Classification taxonomique avec Kraken2 sur des reads
-kraken2 --db /chemin/vers/kraken_db --paired \
+kraken2 --db /kdb --paired \
         trim_S1_R1.fastq.gz trim_S1_R2.fastq.gz \
-        --output kraken.out --report kraken.report
+        --output kraken_reads.out --report kraken_reads.report
 
 # Classification sur un fichier fasta
-kraken2 --db /chemin/vers/kraken_db --output kraken.out --report kraken.report S1_assembled/scaffolds.fasta
+kraken2 --db /kdb --output kraken_fasta.out --report kraken_fasta.report S1_assembled/scaffolds.fasta
 
 # Estimation des abondances avec Bracken (niveau espèce)
 bracken -d /chemin/vers/kraken_db \
@@ -500,8 +503,7 @@ bracken -d /chemin/vers/kraken_db \
     <h4><a href="https://github.com/metashot/busco" target="_blank">BUSCO</a></h4>
     <p>Outil bioinformatique qui évalue la complétude d’un génome ou d’un assemblage en recherchant la présence de gènes universels conservés (Benchmarking Universal Single-Copy Orthologs),
 permettant de déterminer si l’assemblage est complet ou s’il manque des régions importantes.</p>
-    <pre><code>
-# Afficher les bases de données disponibles
+    <pre><code># Afficher les bases de données disponibles
 busco --list-datasets    
 
 # Lancer l'analyse busco
@@ -521,8 +523,7 @@ busco -i S1_assembled/scaffolds.fasta -o busco -l bacteria_odb10 -m genome</code
     <h4><a href="https://github.com/denglab/SeqSero2" target="_blank">Seqsero2</a></h4>
     <p>une pipeline pour la prédiction du sérotype de Salmonella à partir de lectures de séquençage brutes ou d'assemblages
       de génomes.</p>
-    <pre><code>#
-# Lancer l'analyse de ectyper
+    <pre><code>## Lancer l'analyse de ectyper
 ectyper -i S1_assembled/scaffolds.fasta -o ectyper
 
 # Lancer ECtyper sur plusieurs fichiers fasta
@@ -580,19 +581,19 @@ abricate --list</code></pre>
 abricate S1_assembled/scaffolds.fasta > abricate.csv
 
 # Lance abricate avec la base de donnée resfinder
-abricate --db resfinder S1_assembled/scaffolds.fasta > abricate.csv
+abricate --db resfinder S1_assembled/scaffolds.fasta > S1_resfinder.csv
+
+# Lance abricate avec la base de donnée resfinder
+abricate --db resfinder S2_assembled/assembly.fasta > S2_resfinder.csv
 
 # Lancer abricate sur plusieurs fichiers csv
 abricate --db resfinder *fasta > resfinder.csv
-
-# Lancons abricate sur un souche multirésistante (MDR = Multi Drug Resistant)
-abricate --db resfinder kpneumoniae_mdr.fasta
 
 # Recheche la présence de plasmides
 abricate --db plasmidfinder S1_assembled/scaffolds.fasta
 
 # Lance abricate avec la base vfdb (virulence factors database)
-abricate --db vfdb S1_assembled/scaffolds.fasta > abricate_virulence.csv</code></pre>
+abricate --db vfdb S1_assembled/scaffolds.fasta > S1_virulence.csv</code></pre>
     <ul>
       <li>--db : spécifie la base de données à utiliser</li>
       <li>> : permet de rediriger le résultat de sortie vers un fichier</li>

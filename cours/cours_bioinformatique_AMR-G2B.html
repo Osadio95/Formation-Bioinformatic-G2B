@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cours – Bio-informatique & Résistance aux Antimicrobiens</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #1a56db;
+      --blue-lt: #e8f0fe;
+      --green:   #0a7c59;
+      --green-lt:#e6f4f0;
+      --orange:  #b45309;
+      --orange-lt:#fef3c7;
+      --red:     #b91c1c;
+      --red-lt:  #fee2e2;
+      --gray:    #374151;
+      --gray-lt: #f3f4f6;
+      --border:  #d1d5db;
+      --text:    #111827;
+      --sidebar: 260px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      background: #ffffff;
+      display: flex;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      width: var(--sidebar);
+      min-height: 100vh;
+      background: #f9fafb;
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: 0; left: 0;
+      overflow-y: auto;
+      padding: 24px 0 40px;
+    }
+
+    #sidebar .logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    #sidebar .logo span {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    #sidebar .logo strong {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    #sidebar nav a {
+      display: block;
+      padding: 6px 20px;
+      font-size: 13px;
+      color: #374151;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: background .15s, border-color .15s;
+    }
+    #sidebar nav a:hover {
+      background: #e5e7eb;
+      border-left-color: var(--blue);
+      color: var(--blue);
+    }
+    #sidebar nav .section-label {
+      padding: 14px 20px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #9ca3af;
+    }
+
+    /* ── Main ── */
+    #main {
+      margin-left: var(--sidebar);
+      max-width: 860px;
+      padding: 48px 48px 80px;
+      flex: 1;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      border-bottom: 2px solid var(--text);
+      padding-bottom: 24px;
+      margin-bottom: 40px;
+    }
+    .page-header .eyebrow {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .page-header p {
+      color: #4b5563;
+      font-size: 14px;
+      max-width: 620px;
+    }
+
+    /* ── Sections ── */
+    section { margin-bottom: 56px; }
+
+    section > h2 {
+      font-size: 20px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    section > h2 .tag {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--blue-lt);
+      color: var(--blue);
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 24px 0 8px;
+      color: var(--text);
+    }
+
+    p { margin-bottom: 12px; }
+    ul, ol { margin: 8px 0 12px 20px; }
+    li { margin-bottom: 4px; }
+
+    /* ── Notion card ── */
+    .notion {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .notion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #f9fafb;
+      border-bottom: 1px solid var(--border);
+    }
+    .notion-header .term {
+      font-weight: 700;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      color: var(--text);
+    }
+    .notion-header .badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .badge-base { background: var(--green-lt); color: var(--green); }
+    .badge-inter { background: var(--orange-lt); color: var(--orange); }
+    .badge-avance { background: var(--red-lt); color: var(--red); }
+
+    .notion-body { padding: 12px 14px; font-size: 14px; }
+    .notion-body strong { color: var(--text); }
+
+    /* ── Formula / code block ── */
+    .formula {
+      background: #f3f4f6;
+      border-left: 3px solid var(--blue);
+      padding: 10px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      border-radius: 0 4px 4px 0;
+      margin: 10px 0;
+    }
+
+    /* ── Callout ── */
+    .callout {
+      display: flex;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .callout-info  { background: var(--blue-lt); border-left: 4px solid var(--blue); }
+    .callout-warn  { background: var(--orange-lt); border-left: 4px solid var(--orange); }
+    .callout-tip   { background: var(--green-lt); border-left: 4px solid var(--green); }
+    .callout .icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 16px 0;
+    }
+    thead th {
+      background: #f3f4f6;
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+    }
+    tbody td {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) td { background: #fafafa; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #main { margin-left: 0; padding: 24px 20px 60px; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      #sidebar { display: none; }
+      #main { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<aside id="sidebar">
+  <div class="logo">
+    <span>Cours pratique</span>
+    <strong>Bio-informatique AMR</strong>
+  </div>
+  <nav>
+    <div class="section-label">Introduction</div>
+    <a href="#intro">Vue d'ensemble</a>
+    <a href="#pipeline">Pipeline général</a>
+
+    <div class="section-label">Contrôle qualité</div>
+    <a href="#qc-notions">Notions fondamentales</a>
+    <a href="#qscore">Q-score & Phred</a>
+    <a href="#outils-qc">Outils : FastQC / Fastp</a>
+
+    <div class="section-label">Assemblage</div>
+    <a href="#assemblage-notions">Notions d'assemblage</a>
+    <a href="#contig">Contig, scaffold, N50</a>
+    <a href="#profondeur">Profondeur de couverture</a>
+    <a href="#outils-assemblage">Outils : SPAdes / Unicycler</a>
+
+    <div class="section-label">Typage moléculaire</div>
+    <a href="#mlst">MLST</a>
+    <a href="#cgmlst">cgMLST & wgMLST</a>
+    <a href="#serotypage">Sérotypage in silico</a>
+    <a href="#outils-typage">Outils : mlst / chewBBACA</a>
+
+    <div class="section-label">Résistance AMR</div>
+    <a href="#amr-notions">Notions biologiques AMR</a>
+    <a href="#outils-amr">Outils : ResFinder / CARD / AMRFinder</a>
+
+    <div class="section-label">Virulence & Phylogénie</div>
+    <a href="#virulence">Facteurs de virulence</a>
+    <a href="#phylogenie">Phylogénie & SNP</a>
+
+    <div class="section-label">Synthèse</div>
+    <a href="#interpretation">Interprétation globale</a>
+    <a href="#glossaire">Glossaire rapide</a>
+  </nav>
+</aside>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<main id="main">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="eyebrow">Cours complémentaire — Pratique</div>
+    <h1>Notions clés en bio-informatique<br>pour l'analyse de la résistance aux antimicrobiens</h1>
+    <p>Ce document accompagne le cours pratique (assemblage, contrôle qualité, typage). Il explique les concepts bioinformatiques et biologiques essentiels à l'interprétation des résultats pour chaque outil utilisé.</p>
+  </div>
+
+  <!-- ══ INTRO ══ -->
+  <section id="intro">
+    <h2>Vue d'ensemble <span class="tag">Introduction</span></h2>
+    <p>L'analyse génomique des bactéries résistantes aux antimicrobiens (AMR) repose sur un <strong>pipeline séquentiel</strong> : depuis les reads bruts issus du séquençage jusqu'à l'interprétation épidémiologique et clinique. Chaque étape produit des données qui doivent être évaluées avec des critères précis.</p>
+
+    <div class="callout callout-info">
+      <span class="icon">ℹ️</span>
+      <div>Ce cours utilise principalement des données de <strong>séquençage Illumina</strong> (courtes lectures, paired-end), mais certains outils s'appliquent aussi aux longues lectures (Oxford Nanopore, PacBio).</div>
+    </div>
+  </section>
+
+  <!-- ══ PIPELINE ══ -->
+  <section id="pipeline">
+    <h2>Pipeline général <span class="tag">Introduction</span></h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Étape</th>
+          <th>Objectif</th>
+          <th>Outil(s) typique(s)</th>
+          <th>Sortie principale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1. Contrôle qualité</td><td>Évaluer et filtrer les reads bruts</td><td>FastQC, Fastp, Trimmomatic</td><td>Reads filtrés (.fastq)</td></tr>
+        <tr><td>2. Assemblage</td><td>Reconstruire le génome</td><td>SPAdes, Unicycler, Flye</td><td>Contigs / scaffolds (.fasta)</td></tr>
+        <tr><td>3. Contrôle qualité de l'assemblage</td><td>Évaluer la qualité du génome assemblé</td><td>QUAST, CheckM, BUSCO</td><td>Rapport de qualité</td></tr>
+        <tr><td>4. Annotation</td><td>Identifier les gènes</td><td>Prokka, PGAP</td><td>Fichier annoté (.gff / .gbk)</td></tr>
+        <tr><td>5. Typage</td><td>Classifier la souche</td><td>mlst, chewBBACA, Kleborate</td><td>Profil MLST / cgMLST</td></tr>
+        <tr><td>6. AMR</td><td>Détecter les gènes de résistance</td><td>ResFinder, AMRFinder, CARD RGI</td><td>Liste de gènes AMR</td></tr>
+        <tr><td>7. Virulence</td><td>Identifier les facteurs de pathogénicité</td><td>VirulenceFinder, VFDB</td><td>Facteurs de virulence</td></tr>
+        <tr><td>8. Phylogénie</td><td>Placer la souche dans un contexte épidémio.</td><td>Snippy, Gubbins, IQ-TREE</td><td>Arbre phylogénétique</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ QC NOTIONS ══ -->
+  <section id="qc-notions">
+    <h2>Notions fondamentales — Contrôle qualité <span class="tag">QC</span></h2>
+
+    <div class="notion" id="qscore">
+      <div class="notion-header">
+        <span class="term">Q-score (score de qualité Phred)</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Le Q-score mesure la <strong>probabilité d'erreur d'une base</strong> lors du séquençage. Il est calculé selon la formule :</p>
+        <div class="formula">Q = -10 × log₁₀(P)     où P = probabilité d'erreur de la base</div>
+        <table>
+          <thead><tr><th>Q-score</th><th>Probabilité d'erreur</th><th>Précision</th><th>Interprétation</th></tr></thead>
+          <tbody>
+            <tr><td>Q10</td><td>1 sur 10</td><td>90 %</td><td>❌ Mauvais</td></tr>
+            <tr><td>Q20</td><td>1 sur 100</td><td>99 %</td><td>⚠️ Acceptable (seuil minimal)</td></tr>
+            <tr><td>Q30</td><td>1 sur 1 000</td><td>99,9 %</td><td>✅ Bon (standard Illumina)</td></tr>
+            <tr><td>Q40</td><td>1 sur 10 000</td><td>99,99 %</td><td>✅✅ Excellent</td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout-warn">
+          <span class="icon">⚠️</span>
+          <div><strong>Interprétation pratique :</strong> En Illumina, les bases en fin de lecture (3' end) ont tendance à avoir un Q-score qui chute. Un trimming des bases avec Q &lt; 20 est recommandé avant l'assemblage.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Read (lecture)</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Un <strong>read</strong> est une séquence d'ADN lue par le séquenceur. En Illumina <em>paired-end</em>, chaque fragment est séquencé des deux côtés, donnant un read R1 (sens) et un read R2 (anti-sens).</p>
+        <ul>
+          <li><strong>Read length :</strong> longueur d'un read (ex. 150 pb pour Illumina 2×150).</li>
+          <li><strong>Insert size :</strong> taille totale du fragment entre les deux adaptateurs.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Adaptateurs (adapters)</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Ce sont des séquences synthétiques ligaturées aux extrémités des fragments d'ADN lors de la préparation des librairies. Ils permettent la fixation sur le flowcell. Ils doivent être <strong>retirés avant l'analyse</strong> (trimming) car leur présence fausse l'assemblage et l'analyse.</p>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">GC content (teneur en GC)</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Proportion de bases G et C dans la séquence. Chaque espèce bactérienne a un % GC caractéristique (ex. <em>E. coli</em> ~50 %, <em>Mycobacterium tuberculosis</em> ~65 %). Un profil GC anormal peut indiquer :</p>
+        <ul>
+          <li>Une contamination par un autre organisme.</li>
+          <li>Des erreurs de séquençage systématiques.</li>
+          <li>La présence d'un plasmide ou d'un élément mobile.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OUTILS QC ══ -->
+  <section id="outils-qc">
+    <h2>Outils — FastQC &amp; Fastp <span class="tag">QC</span></h2>
+
+    <h3>FastQC</h3>
+    <p>FastQC génère un rapport HTML sur la qualité des reads bruts. Les modules clés à vérifier :</p>
+    <table>
+      <thead><tr><th>Module FastQC</th><th>Ce qu'il mesure</th><th>Signal d'alerte</th></tr></thead>
+      <tbody>
+        <tr><td>Per base sequence quality</td><td>Distribution des Q-scores position par position</td><td>Médiane &lt; Q28 en fin de read</td></tr>
+        <tr><td>Per sequence GC content</td><td>Distribution du % GC sur tous les reads</td><td>Bimodalité → contamination possible</td></tr>
+        <tr><td>Sequence duplication</td><td>% de reads dupliqués</td><td>&gt; 50 % → sur-amplification PCR</td></tr>
+        <tr><td>Adapter content</td><td>Présence de séquences adaptateur</td><td>Toute présence → trimming nécessaire</td></tr>
+        <tr><td>Per base N content</td><td>Bases indéterminées (N)</td><td>&gt; 5 % → problème de séquençage</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Fastp</h3>
+    <p>Fastp réalise à la fois le contrôle qualité <strong>et</strong> le trimming en un seul outil. Il produit un rapport JSON/HTML et filtre automatiquement :</p>
+    <ul>
+      <li>Les bases avec Q &lt; 20 (par défaut) en extrémité de read.</li>
+      <li>Les adaptateurs (détection automatique ou fournie).</li>
+      <li>Les reads trop courts après trimming (&lt; 15 pb par défaut).</li>
+    </ul>
+    <div class="callout callout-tip">
+      <span class="icon">💡</span>
+      <div><strong>Conseil :</strong> Toujours comparer FastQC <em>avant</em> et <em>après</em> fastp pour visualiser l'amélioration de la qualité des reads.</div>
+    </div>
+  </section>
+
+  <!-- ══ ASSEMBLAGE NOTIONS ══ -->
+  <section id="assemblage-notions">
+    <h2>Notions d'assemblage <span class="tag">Assemblage</span></h2>
+
+    <div class="notion" id="contig">
+      <div class="notion-header">
+        <span class="term">Contig</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Un <strong>contig</strong> (de <em>contiguous sequence</em>) est une séquence d'ADN continue obtenue par assemblage de reads qui se chevauchent, sans aucune ambiguïté ni séquence inconnue. C'est l'unité de base de l'assemblage.</p>
+        <div class="callout callout-info">
+          <span class="icon">ℹ️</span>
+          <div>Plus un contig est long, meilleur est l'assemblage. Un génome bactérien de qualité peut se résumer à quelques dizaines de contigs, voire un seul (assemblage complet).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Scaffold</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Un <strong>scaffold</strong> est un ensemble de contigs dont l'<em>ordre</em> et l'<em>orientation</em> relative sont connus (grâce aux reads paired-end), mais séparés par des régions de séquence inconnue représentées par des "N". Les scaffolds sont plus longs que les contigs mais contiennent des gaps.</p>
+        <div class="formula">Scaffold = [Contig1]—[NNN…NNN]—[Contig2]—[NNN…NNN]—[Contig3]</div>
+      </div>
+    </div>
+
+    <div class="notion" id="profondeur">
+      <div class="notion-header">
+        <span class="term">Profondeur de couverture (Coverage / Depth)</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>La <strong>profondeur</strong> indique combien de fois, en moyenne, chaque base du génome est couverte par des reads. Elle est calculée par la formule de Lander-Waterman :</p>
+        <div class="formula">Profondeur (X) = (Nombre de reads × Longueur du read) / Taille du génome</div>
+        <table>
+          <thead><tr><th>Profondeur</th><th>Interprétation</th><th>Suffisant pour ?</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 20X</td><td>Insuffisant</td><td>❌ Assemblage de mauvaise qualité</td></tr>
+            <tr><td>20–50X</td><td>Acceptable</td><td>✅ Assemblage basique, MLST</td></tr>
+            <tr><td>50–100X</td><td>Bon</td><td>✅ AMR, typage cgMLST</td></tr>
+            <tr><td>&gt; 100X</td><td>Très bon</td><td>✅✅ Phylogénie, SNP calling</td></tr>
+          </tbody>
+        </table>
+        <div class="callout callout-warn">
+          <span class="icon">⚠️</span>
+          <div>Une profondeur <strong>hétérogène</strong> (certaines régions très couvertes, d'autres pas) peut indiquer une contamination ou des régions répétées. À vérifier dans les rapports QUAST/Bandage.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">N50 (et N90, L50)</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Le <strong>N50</strong> est la longueur du contig tel que 50 % du génome assemblé total est contenu dans des contigs de taille ≥ N50. C'est la métrique la plus utilisée pour évaluer la <em>contiguïté</em> d'un assemblage.</p>
+        <ul>
+          <li><strong>N50 élevé</strong> → assemblage continu, peu de contigs.</li>
+          <li><strong>N50 bas</strong> → assemblage fragmenté, génome en nombreux petits morceaux.</li>
+          <li><strong>L50</strong> : nombre minimal de contigs qui couvrent 50 % du génome (plus L50 est bas, mieux c'est).</li>
+          <li><strong>N90</strong> : même principe que N50 mais pour 90 % du génome.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Graphe d'assemblage (De Bruijn Graph)</span>
+        <span class="badge badge-avance">Avancé</span>
+      </div>
+      <div class="notion-body">
+        <p>La plupart des assembleurs modernes (SPAdes, Unicycler) utilisent un <strong>graphe de De Bruijn</strong> : les reads sont découpés en k-mers (sous-séquences de longueur k), et le graphe représente leurs chevauchements. Les régions répétées créent des nœuds complexes (bulles, cycles) difficiles à résoudre.</p>
+        <p>Le logiciel <strong>Bandage</strong> permet de visualiser ce graphe et d'identifier les zones problématiques de l'assemblage.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OUTILS ASSEMBLAGE ══ -->
+  <section id="outils-assemblage">
+    <h2>Outils — SPAdes &amp; Unicycler <span class="tag">Assemblage</span></h2>
+
+    <h3>SPAdes</h3>
+    <p>SPAdes (<em>St. Petersburg genome Assembler</em>) est l'assembleur de référence pour les génomes bactériens Illumina. Il utilise plusieurs valeurs de k-mer successives pour améliorer l'assemblage. Paramètres importants :</p>
+    <ul>
+      <li><code>--careful</code> : active la correction d'erreurs post-assemblage (recommandé pour les bactéries).</li>
+      <li><code>--plasmid</code> : mode optimisé pour l'assemblage de plasmides.</li>
+      <li><code>-k</code> : liste des k-mers utilisés (ex. 21,33,55,77).</li>
+    </ul>
+
+    <h3>Unicycler</h3>
+    <p>Unicycler est un assembleur hybride (courtes + longues lectures) particulièrement efficace pour obtenir des assemblages <strong>complets et circulaires</strong>. Il combine SPAdes (courtes lectures) + Miniasm/Racon (longues lectures) pour résoudre les régions répétées.</p>
+    <div class="callout callout-tip">
+      <span class="icon">💡</span>
+      <div><strong>Quand utiliser Unicycler ?</strong> Lorsque vous disposez de données Nanopore en complément de l'Illumina. Pour les données Illumina seules, SPAdes avec <code>--careful</code> suffit généralement.</div>
+    </div>
+
+    <h3>QUAST — Évaluation de l'assemblage</h3>
+    <p>QUAST génère un rapport complet des métriques d'assemblage. Les indicateurs clés :</p>
+    <table>
+      <thead><tr><th>Métrique QUAST</th><th>Valeur attendue (bactérie typique)</th><th>Signification</th></tr></thead>
+      <tbody>
+        <tr><td>Nombre de contigs</td><td>&lt; 200 (idéal &lt; 50)</td><td>Fragmentation de l'assemblage</td></tr>
+        <tr><td>Taille totale</td><td>Proche de la taille attendue ± 10 %</td><td>Complétude du génome</td></tr>
+        <tr><td>N50</td><td>&gt; 50 000 pb (idéal &gt; 200 000 pb)</td><td>Contiguïté</td></tr>
+        <tr><td>Plus grand contig</td><td>&gt; 100 000 pb</td><td>Qualité de l'assemblage</td></tr>
+        <tr><td>% GC</td><td>Conforme à l'espèce</td><td>Cohérence taxonomique</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ MLST ══ -->
+  <section id="mlst">
+    <h2>MLST — Multi-Locus Sequence Typing <span class="tag">Typage</span></h2>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">MLST (Multi-Locus Sequence Typing)</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Le MLST est une méthode de typage moléculaire basée sur le séquençage de <strong>7 gènes housekeeping</strong> (gènes de ménage), conservés mais avec une variabilité suffisante pour distinguer les souches. Chaque variante allélique unique d'un gène se voit attribuer un numéro d'allèle.</p>
+        <div class="formula">Profil allélique = [allèle_gène1, allèle_gène2, …, allèle_gène7]<br>→ Séquence Type (ST) = numéro unique associé à ce profil</div>
+        <p><strong>Exemple pour <em>E. coli</em> (schéma Achtman) :</strong> gènes <em>adk, fumC, gyrB, icd, mdh, purA, recA</em>. Si une souche a le profil 1-1-1-1-1-1-1, elle appartient au ST1.</p>
+      </div>
+    </div>
+
+    <h3>Pourquoi le MLST est important en AMR ?</h3>
+    <ul>
+      <li>Certains <strong>clones à haut risque</strong> (High-Risk Clones, HRC) sont associés à la dissémination mondiale de résistances. Exemple : <em>E. coli</em> ST131 (résistance aux fluoroquinolones + β-lactamases à spectre élargi), <em>K. pneumoniae</em> ST258 (carbapénémases).</li>
+      <li>Le ST permet une <strong>comparaison internationale</strong> des souches via des bases de données publiques (PubMLST.org).</li>
+    </ul>
+
+    <div class="callout callout-warn">
+      <span class="icon">⚠️</span>
+      <div><strong>Limites du MLST :</strong> Seuls 7 gènes sont analysés → résolution limitée. Deux souches du même ST peuvent être très différentes génomiquement. Pour une meilleure résolution, utiliser le cgMLST.</div>
+    </div>
+  </section>
+
+  <!-- ══ cgMLST ══ -->
+  <section id="cgmlst">
+    <h2>cgMLST &amp; wgMLST <span class="tag">Typage</span></h2>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">cgMLST (core genome MLST)</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Le <strong>cgMLST</strong> étend le principe du MLST à l'ensemble du <em>génome cœur</em> (core genome) : les gènes présents dans ≥ 95–100 % des souches d'une espèce. Selon les espèces, cela représente <strong>1 000 à 3 000 loci</strong> au lieu de 7.</p>
+        <ul>
+          <li><strong>Résolution bien supérieure</strong> au MLST classique → discrimine des souches du même ST.</li>
+          <li>Utilisé en épidémiologie hospitalière pour confirmer ou infirmer des clusters de transmission.</li>
+          <li>Seuil de clustering : deux souches appartenant au même cluster de transmission partagent généralement ≤ 5–10 allèles différents (seuil variable selon les espèces et les guidelines).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">wgMLST (whole genome MLST)</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Le <strong>wgMLST</strong> inclut en plus du génome cœur les gènes <em>accessoires</em> (présents dans un sous-ensemble de souches). Il offre la résolution maximale mais l'interprétation est plus complexe car de nombreux loci peuvent être absents.</p>
+        <table>
+          <thead><tr><th></th><th>MLST</th><th>cgMLST</th><th>wgMLST</th></tr></thead>
+          <tbody>
+            <tr><td>Nombre de loci</td><td>7</td><td>~1 000–3 000</td><td>&gt; 3 000</td></tr>
+            <tr><td>Résolution</td><td>Faible</td><td>Élevée</td><td>Très élevée</td></tr>
+            <tr><td>Utilisation</td><td>Épidémio. mondiale</td><td>Clusters hospitaliers</td><td>Transmission fine</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SEROTYPAGE ══ -->
+  <section id="serotypage">
+    <h2>Sérotypage &amp; autres typages in silico <span class="tag">Typage</span></h2>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Sérotypage in silico</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Le sérotypage classique utilise des anticorps pour distinguer les antigènes de surface (antigènes O, H, K). Le sérotypage <em>in silico</em> prédit ce sérovar à partir des gènes présents dans le génome assemblé.</p>
+        <ul>
+          <li><strong>Salmonella :</strong> ECTyper, SISTR → prédiction antigènes O et H.</li>
+          <li><strong>E. coli :</strong> SerotypeFinder → antigènes O et H.</li>
+          <li><strong>Klebsiella pneumoniae :</strong> Kleborate → antigènes K (capsule) et O.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Clonal Complex (CC) et Sequence Type (ST)</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Un <strong>Clonal Complex</strong> regroupe des STs partageant 6/7 allèles en commun (Single Locus Variants, SLV). Ils dérivent d'un ancêtre commun et ont une biologie similaire. Un CC peut contenir des dizaines de STs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OUTILS TYPAGE ══ -->
+  <section id="outils-typage">
+    <h2>Outils — mlst &amp; chewBBACA <span class="tag">Typage</span></h2>
+
+    <h3>mlst (Torsten Seemann)</h3>
+    <p>Outil en ligne de commande qui interroge les bases de données PubMLST à partir d'un génome assemblé (.fasta). Il identifie automatiquement l'espèce et retourne le profil allélique et le ST.</p>
+    <div class="formula">mlst genome.fasta<br>→ Salmonella  Achtman_7  ST19  aroC(3) dnaN(7) hemD(40) hisD(9) purE(7) sucA(1) thrA(3)</div>
+
+    <h3>chewBBACA</h3>
+    <p>Outil de référence pour le <strong>cgMLST et wgMLST</strong>. Il réalise :</p>
+    <ul>
+      <li>L'appel des allèles sur chaque locus du schéma.</li>
+      <li>L'attribution de nouveaux allèles non référencés (novel alleles).</li>
+      <li>La construction de matrices de distances inter-souches.</li>
+    </ul>
+    <p>Les résultats chewBBACA sont directement utilisables dans <strong>PHYLOViZ</strong> pour la visualisation en Minimum Spanning Tree (MST), représentation graphique des relations entre souches.</p>
+
+    <div class="callout callout-info">
+      <span class="icon">ℹ️</span>
+      <div><strong>Codes de qualité chewBBACA :</strong> Chaque allèle est annoté : <em>EXC</em> (exact match), <em>INF</em> (inferred, novel allele), <em>PLOT</em> (partiel), <em>NIPH</em> (locus dupliqué), <em>LNF</em> (locus not found). Un taux élevé de LNF peut indiquer un problème d'assemblage ou une espèce non-cible.</div>
+    </div>
+  </section>
+
+  <!-- ══ AMR NOTIONS ══ -->
+  <section id="amr-notions">
+    <h2>Notions biologiques — Résistance aux antimicrobiens <span class="tag">AMR</span></h2>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Gène de résistance acquis</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Gène absent du génome cœur de l'espèce, acquis par <strong>transfert horizontal</strong> (plasmide, transposon, intégron, îlot de pathogénicité). Exemples : <em>blaTEM</em>, <em>blaCTX-M</em>, <em>mcr-1</em>, <em>vanA</em>.</p>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Résistance intrinsèque vs acquise</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <ul>
+          <li><strong>Intrinsèque :</strong> naturellement présente dans l'espèce (ex. résistance naturelle de <em>Klebsiella</em> à l'ampicilline par AmpC chromosomique). Non transmissible.</li>
+          <li><strong>Acquise :</strong> obtenue via mutation ou transfert horizontal. Transmissible entre bactéries. C'est celle qui nous préoccupe en surveillance.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Classes de mécanismes de résistance</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <table>
+          <thead><tr><th>Mécanisme</th><th>Exemple</th><th>Antibiotiques concernés</th></tr></thead>
+          <tbody>
+            <tr><td>Inactivation enzymatique</td><td>β-lactamases (TEM, SHV, CTX-M, OXA, NDM, KPC)</td><td>β-lactamines</td></tr>
+            <tr><td>Modification de la cible</td><td>Mutations PBP2a (mecA), mutations gyrA/parC</td><td>Pénicillines (MRSA), Fluoroquinolones</td></tr>
+            <tr><td>Pompes à efflux</td><td>MexAB-OprM, AcrAB-TolC</td><td>Large spectre (FQ, tétracyclines…)</td></tr>
+            <tr><td>Réduction de perméabilité</td><td>Perte de porines (OmpK35, OmpK36)</td><td>Carbapénèmes, β-lactamines</td></tr>
+            <tr><td>Protection de la cible</td><td>Protéines Qnr</td><td>Fluoroquinolones</td></tr>
+            <tr><td>Modification de la cible membranaire</td><td>Modifications lipopolysaccharide (LPS), mcr-1</td><td>Polymyxines (colistine)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">β-lactamases à spectre élargi (BLSE / ESBL)</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Les BLSE hydrolysent toutes les pénicillines <strong>et</strong> les céphalosporines de 3e et 4e génération. Les gènes les plus répandus appartiennent à la famille <strong>CTX-M</strong> (notamment CTX-M-15 dissémination mondiale). Elles sont souvent portées par des plasmides de résistance co-portant d'autres résistances (aminoglycosides, fluoroquinolones).</p>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Carbapénémases</span>
+        <span class="badge badge-avance">Avancé</span>
+      </div>
+      <div class="notion-body">
+        <p>Enzymes capables d'hydrolyser les <strong>carbapénèmes</strong> (dernier recours thérapeutique). Les principales familles :</p>
+        <ul>
+          <li><strong>KPC</strong> (Klebsiella pneumoniae carbapenemase) → classe A, inhib. par acide boronique.</li>
+          <li><strong>NDM</strong> (New Delhi Metallo-β-lactamase) → métallo-enzyme (classe B), résistante aux inhibiteurs classiques.</li>
+          <li><strong>OXA-48</strong> et dérivés → classe D, hydrolysent aussi les pénicillines.</li>
+          <li><strong>VIM, IMP</strong> → métallo-enzymes, surtout chez <em>Pseudomonas</em>.</li>
+        </ul>
+        <div class="callout callout-warn">
+          <span class="icon">⚠️</span>
+          <div>La détection génomique d'une carbapénémase doit toujours être corrélée aux données phénotypiques (CMI, tests Carba NP, immunochromatographie). Un gène présent ne garantit pas une expression cliniquement significative.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">% identité & % couverture dans la détection AMR</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Lors de la recherche de gènes de résistance par alignement (BLAST-like), deux métriques sont essentielles :</p>
+        <ul>
+          <li><strong>% identité :</strong> pourcentage de bases identiques entre la séquence query et la séquence de référence. Un seuil de 90 % est souvent utilisé mais varie selon les outils.</li>
+          <li><strong>% couverture :</strong> portion de la séquence de référence alignée. Une couverture &lt; 80 % peut indiquer un gène tronqué (non fonctionnel) ou un faux positif.</li>
+        </ul>
+        <div class="formula">Gène de résistance confirmé : identité ≥ 90 % ET couverture ≥ 80 %<br>(seuils par défaut ResFinder — à ajuster selon le contexte)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OUTILS AMR ══ -->
+  <section id="outils-amr">
+    <h2>Outils — ResFinder, CARD, AMRFinder <span class="tag">AMR</span></h2>
+
+    <h3>ResFinder (CGE — Center for Genomic Epidemiology)</h3>
+    <p>ResFinder recherche les gènes de résistance acquis et les mutations chromosomiques de résistance dans un génome assemblé ou des reads bruts. Il interroge sa propre base de données régulièrement mise à jour.</p>
+    <ul>
+      <li>Deux modes : <strong>acquired</strong> (gènes acquis) et <strong>point mutations</strong> (mutations chromosomiques).</li>
+      <li>Résultat : liste de gènes avec %identité, %couverture, phénotype de résistance prédit et localisation (chromosome/plasmide si ResPlasmidFinder est utilisé).</li>
+    </ul>
+
+    <h3>CARD — Comprehensive Antibiotic Resistance Database</h3>
+    <p>Base de données et outil (RGI — Resistance Gene Identifier) offrant une classification ontologique des gènes AMR :</p>
+    <ul>
+      <li><strong>PERFECT hit :</strong> correspondance exacte → résistance très probable.</li>
+      <li><strong>STRICT hit :</strong> forte similarité → résistance probable.</li>
+      <li><strong>LOOSE hit :</strong> similarité partielle → à interpréter avec prudence.</li>
+    </ul>
+
+    <h3>AMRFinderPlus (NCBI)</h3>
+    <p>Outil du NCBI intégrant à la fois les gènes de résistance (AMR), les gènes de virulence et les gènes de stress. Il supporte plusieurs espèces avec des modèles taxonomiquement spécifiques pour réduire les faux positifs. Recommandé pour la soumission aux bases NCBI/GenBank.</p>
+
+    <div class="callout callout-tip">
+      <span class="icon">💡</span>
+      <div><strong>Bonne pratique :</strong> Utiliser au moins deux outils complémentaires (ex. ResFinder + AMRFinder) et ne retenir un gène que s'il est détecté avec les deux, ou justifier une divergence. Les bases de données diffèrent en termes de couverture et de critères de seuil.</div>
+    </div>
+  </section>
+
+  <!-- ══ VIRULENCE ══ -->
+  <section id="virulence">
+    <h2>Facteurs de virulence <span class="tag">Virulence</span></h2>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Facteur de virulence</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Attribut moléculaire permettant à la bactérie de coloniser l'hôte, d'échapper aux défenses immunitaires, d'acquérir des nutriments ou de causer des lésions. Catégories principales :</p>
+        <ul>
+          <li><strong>Adhésines :</strong> permettent la fixation aux cellules hôtes (fimbriae type 1, P, Dr).</li>
+          <li><strong>Toxines :</strong> STa/STb/LT (<em>E. coli</em> ETEC), STx1/STx2 (<em>E. coli</em> STEC/EHEC), toxine A/B (<em>C. difficile</em>).</li>
+          <li><strong>Systèmes de capture du fer :</strong> sidérophores (yersiniabactine, entérobactine, colicine).</li>
+          <li><strong>Capsule :</strong> protection contre la phagocytose (antigène K chez <em>Klebsiella</em>).</li>
+          <li><strong>Systèmes de sécrétion :</strong> SST3, SST6 → injection de protéines effectrices dans la cellule hôte.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>Les outils <strong>VirulenceFinder</strong> (CGE) et <strong>VFDB</strong> (Virulence Factor Database) permettent de détecter ces gènes in silico. L'interprétation doit toujours tenir compte du pathotype bactérien concerné.</p>
+  </section>
+
+  <!-- ══ PHYLOGENIE ══ -->
+  <section id="phylogenie">
+    <h2>Phylogénie &amp; SNP calling <span class="tag">Phylogénie</span></h2>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">SNP (Single Nucleotide Polymorphism)</span>
+        <span class="badge badge-base">Base</span>
+      </div>
+      <div class="notion-body">
+        <p>Un <strong>SNP</strong> est une substitution d'une seule base entre deux séquences. Le nombre de SNPs entre deux génomes est une mesure directe de leur distance évolutive. Le SNP calling consiste à aligner les reads de chaque souche sur un génome de référence et à identifier les positions variant.</p>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Snippy — SNP calling</span>
+        <span class="badge badge-inter">Intermédiaire</span>
+      </div>
+      <div class="notion-body">
+        <p>Snippy aligne les reads sur un génome de référence et appelle les variants (SNPs + indels). En mode <em>core</em> (snippy-core), il extrait les positions polymorphes partagées par toutes les souches → matrice de SNPs → arbre phylogénétique.</p>
+      </div>
+    </div>
+
+    <div class="notion">
+      <div class="notion-header">
+        <span class="term">Recombinaison et Gubbins</span>
+        <span class="badge badge-avance">Avancé</span>
+      </div>
+      <div class="notion-body">
+        <p>La <strong>recombinaison</strong> (transfert horizontal de larges fragments d'ADN) peut créer des clusters de SNPs artificiels qui faussent les arbres phylogénétiques. <strong>Gubbins</strong> identifie et masque ces régions recombinantes avant la construction de l'arbre. Essentiel pour les espèces à haute recombinaison comme <em>Salmonella</em> ou <em>Streptococcus pneumoniae</em>.</p>
+      </div>
+    </div>
+
+    <h3>IQ-TREE &amp; FastTree</h3>
+    <p>Ces outils construisent des arbres phylogénétiques par <strong>maximum de vraisemblance</strong> à partir de la matrice de SNPs. L'arbre obtenu permet de visualiser les relations entre souches et d'identifier des clusters de transmission dans un contexte épidémiologique.</p>
+  </section>
+
+  <!-- ══ INTERPRETATION ══ -->
+  <section id="interpretation">
+    <h2>Interprétation globale <span class="tag">Synthèse</span></h2>
+
+    <p>L'interprétation bioinformatique ne se fait jamais en isolation. Elle doit être mise en regard des données cliniques, épidémiologiques et phénotypiques.</p>
+
+    <table>
+      <thead><tr><th>Donnée bioinformatique</th><th>Question clinique/épidémio</th><th>Limites</th></tr></thead>
+      <tbody>
+        <tr><td>ST (MLST)</td><td>Cette souche appartient-elle à un clone à haut risque ?</td><td>Résolution limitée — deux ST identiques peuvent être épidémiologiquement non liés</td></tr>
+        <tr><td>cgMLST / distance allélique</td><td>Ces souches partagent-elles une source de transmission commune ?</td><td>Les seuils de clustering varient selon espèce et guidelines</td></tr>
+        <tr><td>Gènes AMR</td><td>Quelle résistance phénotypique prévoir ? Quel traitement ?</td><td>Présence du gène ≠ expression ; toujours corréler à l'antibiogramme</td></tr>
+        <tr><td>SNP phylogénie</td><td>Confirmation de cluster épidémique, datation évolutive</td><td>Qualité dépend du génome de référence choisi</td></tr>
+        <tr><td>Profondeur de couverture</td><td>Données fiables pour aller plus loin ?</td><td>Une couverture trop basse invalide l'analyse AMR et le cgMLST</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-warn">
+      <span class="icon">⚠️</span>
+      <div><strong>Principe fondamental :</strong> Un résultat bioinformatique est une <em>prédiction</em>. La corrélation avec les données phénotypiques (antibiogramme, tests biochimiques, PCR confirmatory) reste indispensable avant toute décision clinique ou de santé publique.</div>
+    </div>
+  </section>
+
+  <!-- ══ GLOSSAIRE ══ -->
+  <section id="glossaire">
+    <h2>Glossaire rapide <span class="tag">Référence</span></h2>
+    <table>
+      <thead><tr><th>Terme</th><th>Définition courte</th></tr></thead>
+      <tbody>
+        <tr><td>Allèle</td><td>Variant de séquence d'un gène donné, identifié par un numéro dans les schémas MLST/cgMLST</td></tr>
+        <tr><td>Assembly gap</td><td>Région non séquencée dans un scaffold, représentée par des N</td></tr>
+        <tr><td>BLSE / ESBL</td><td>β-lactamase à spectre élargi, hydrolyse C3G + pénicillines</td></tr>
+        <tr><td>Contig</td><td>Séquence continue issue de l'assemblage, sans gap</td></tr>
+        <tr><td>Core genome</td><td>Ensemble des gènes présents dans ≥ 95 % des souches d'une espèce</td></tr>
+        <tr><td>Couverture (depth)</td><td>Nombre moyen de reads couvrant chaque base du génome</td></tr>
+        <tr><td>De Bruijn graph</td><td>Représentation des chevauchements entre k-mers utilisée par SPAdes/Unicycler</td></tr>
+        <tr><td>FastQC</td><td>Outil d'évaluation de la qualité des reads Illumina</td></tr>
+        <tr><td>GC content</td><td>% de bases guanine + cytosine, caractéristique de l'espèce</td></tr>
+        <tr><td>HRC (High-Risk Clone)</td><td>Clone bactérien disséminé mondialement, souvent porteur de multiples résistances</td></tr>
+        <tr><td>k-mer</td><td>Sous-séquence de longueur k extraite des reads pour l'assemblage</td></tr>
+        <tr><td>L50</td><td>Nombre minimal de contigs couvrant 50 % du génome assemblé</td></tr>
+        <tr><td>MLST</td><td>Multi-Locus Sequence Typing — typage sur 7 gènes housekeeping</td></tr>
+        <tr><td>cgMLST</td><td>Core genome MLST — typage sur ~1 000–3 000 loci du génome cœur</td></tr>
+        <tr><td>N50</td><td>Longueur telle que 50 % du génome total est dans des contigs ≥ N50</td></tr>
+        <tr><td>Novel allele</td><td>Variant allélique absent de la base de données de référence, découvert lors de l'analyse</td></tr>
+        <tr><td>Paired-end</td><td>Mode de séquençage Illumina où les deux extrémités d'un fragment sont séquencées</td></tr>
+        <tr><td>Plasmide</td><td>Élément génétique extrachromosomique circulaire, vecteur fréquent de résistances</td></tr>
+        <tr><td>Q-score / Phred</td><td>Score de qualité d'une base = -10×log10(P erreur)</td></tr>
+        <tr><td>Read</td><td>Séquence d'ADN lue par le séquenceur (150 pb pour Illumina 2×150)</td></tr>
+        <tr><td>Scaffold</td><td>Contigs ordonnés et orientés, séparés par des régions de N</td></tr>
+        <tr><td>SNP</td><td>Single Nucleotide Polymorphism — substitution d'une base entre deux génomes</td></tr>
+        <tr><td>ST (Sequence Type)</td><td>Identifiant numérique unique d'un profil allélique MLST</td></tr>
+        <tr><td>Trimming</td><td>Suppression des bases de mauvaise qualité et des adaptateurs en extrémité de reads</td></tr>
+        <tr><td>wgMLST</td><td>Whole genome MLST — inclut gènes cœur + accessoires</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:32px; font-size:13px; color:#6b7280; border-top:1px solid var(--border); padding-top:16px;">
+      Document produit dans le cadre du cours pratique de bio-informatique AMR. Bases de données de référence : PubMLST.org, CARD (card.mcmaster.ca), ResFinder (CGE DTU), NCBI AMRFinderPlus, VFDB.<br>
+      À adapter selon les espèces et les schémas de typage utilisés dans votre laboratoire.
+    </p>
+  </section>
+
+</main>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const links = document.querySelectorAll('#sidebar nav a');
+  const sections = document.querySelectorAll('section[id], div[id]');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.style.borderLeftColor = '');
+        links.forEach(l => {
+          if (l.getAttribute('href') === '#' + entry.target.id) {
+            l.style.borderLeftColor = '#1a56db';
+            l.style.color = '#1a56db';
+            l.style.background = '#e8f0fe';
+          } else {
+            l.style.color = '';
+            l.style.background = '';
+          }
+        });
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '-60px 0px -40% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

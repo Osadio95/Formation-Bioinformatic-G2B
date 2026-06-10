@@ -115,12 +115,12 @@ Données brutes (FASTQ)
         │
         ▼
 ┌──────────────────┐
-│  Contrôle qualité│  FastQC →  MultiQC → fastp
+│  Contrôle qualité│  FastQC/NanoPlot →  MultiQC → fastp/filtlong/porechop
 └────────┬─────────┘
          │
          ▼
 ┌──────────────────┐
-│    Assemblage    │  SPAdes
+│    Assemblage    │  SPAdes/flye
 └────────┬─────────┘
          │
          ▼
@@ -135,7 +135,7 @@ Données brutes (FASTQ)
          │
          ▼
 ┌──────────────────┐
-│     Typage       │  MLST + ECTyper
+│     Typage       │  MLST + ECTyper + SeqSero2
 └──────────────────┘
 ```
 
@@ -146,9 +146,7 @@ Données brutes (FASTQ)
 Nous travaillons sur des génomes de bactéries pathogènes disponibles publiquement sur **NCBI SRA** :
 
 - *Escherichia coli* (entérobactérie, modèle d'étude de la RAM)
-- *Klebsiella pneumoniae* (pathogène hospitalier multirésistant)
-
-Les instructions pour télécharger les données sont dans `data/README_data.md`.
+- *Salmonella enterica* (pathogène hospitalier multirésistant)
 
 ---
 

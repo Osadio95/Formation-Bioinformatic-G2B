@@ -55,17 +55,20 @@ Formation-Bioinformatic-G2B/
 ### Étapes d'installation
 
 ```bash
-# 1. Cloner le dépôt
+#1. Installation de git
+sudo apt install -y git
+
+# 2. Cloner le dépôt
 git clone https://github.com/Osadio95/Formation-Bioinformatic-G2B.git
 cd Formation-Bioinformatic-G2B
 
-# 2. Créer l'environnement Conda
+# 3. Créer l'environnement Conda
 conda env create -f environment.yml
 
-# 3. Activer l'environnement
+# 4. Activer l'environnement
 conda activate bioinformatic
 
-# 4. Vérifier l'installation
+# 5. Vérifier l'installation
 fastqc --version
 spades.py --version
 amrfinder --version

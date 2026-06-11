@@ -38,9 +38,12 @@ Aucune expérience préalable en bioinformatique n'est requise.
 Formation-Bioinformatic-G2B/
 ├──README.md                  ← Ce fichier
 ├──environment.yml            ← Environnement Conda à installer
+├──seqsero2.yml               ← Environnement Conda de SeqSero2
 ├──workflow.html              ← Etapes de l'analyse bioinformatique
-├──S1_ref.fasta               ← Fichier fasta de référence
+├──S1_ref.fasta               ← Fichier fasta de référence pour S1
+├──S2_ref.fasta               ← Fichier fasta de référence pour S2
 ├──cours/
+        ├──cours_bioinformatique_AMR-G2B.html
 ```
 ---
 

@@ -251,11 +251,18 @@ brew upgrade   # Met à jour les logiciels installés
   <div class="section" id="miniconda">
     <h2>2) Installer Miniconda (UNIQUEMENT POUR PREMIERE UTILISATION DE LINUX)</h2>
     <pre><code>cd ~
+
+#Linux et WSL
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 source ~/.bashrc
 
-#Sur Mac (arm64) : 
+#Mac Intel (x86_64 - anciens Mac)
+curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+bash Miniconda3-latest-MacOSX-x86_64.sh
+
+
+#Mac Apple Silicon (arm64 - M1, M2, M3, M4)
 curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
 bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
     <ul>
@@ -266,7 +273,8 @@ bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
 
   <div class="section" id="conda-env">
     <h2>3) Creation de l'environnement conda</h2>
-    <pre><code>conda env create -f environment.yml
+    <pre><code>cd ~/Formation-Bioinformatic-G2B
+conda env create -f environment.yml
 conda env create -f seqsero2.yml      
 conda env create -f kraken2.yml</code></pre>
 <p>Tous les logiciels ne peuvent pas fonctionner dans un seul environnement fait de conflits entre eux.</p>
@@ -278,7 +286,13 @@ conda env create -f kraken2.yml</code></pre>
 
   <div class="section" id="outils-bioinfo">
     <h2>4) Tester l'installation des outils</h2>
-    <pre><code># Active l'environnement bioninformatic
+    <pre><code>#S'arrurer d'etre dans le repertoire de travail : Formation-Bioinformatic-G2B
+pwd
+
+#Si vous n'etes pas dans le repertoire de travail, utilisez la commande suivante pour y acceder
+cd ~/Formation-Bioinformatic-G2B
+      
+# Active l'environnement bioninformatic
 conda activate bioinformatic
 
 # 4. Vérifier l'installation

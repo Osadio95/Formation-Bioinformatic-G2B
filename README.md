@@ -64,6 +64,7 @@ Formation-Bioinformatic-G2B/
 sudo apt install -y git
 
 # 2. Cloner le dépôt
+cd ~
 git clone https://github.com/Osadio95/Formation-Bioinformatic-G2B.git
 cd Formation-Bioinformatic-G2B
 

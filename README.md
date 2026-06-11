@@ -118,35 +118,6 @@ Datasets disponibles sur Zenodo : https://zenodo.org/records/20627702
 
 ![DIC diagram](cours/DIC1.drawio.png)
 
-```
-Données brutes (FASTQ)
-        │
-        ▼
-┌──────────────────┐
-│  Contrôle qualité│  FastQC/NanoPlot →  MultiQC → fastp/filtlong/porechop
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│    Assemblage    │  SPAdes/flye
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│  Évaluation      │  QUAST + BUSCO
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│  Détection RAM   │  AMRFinderPlus
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│     Typage       │  MLST + ECTyper + SeqSero2
-└──────────────────┘
-```
-
 ---
 
 ## Données utilisées dans le cours

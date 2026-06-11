@@ -21,6 +21,7 @@ dependencies:
 
   # ─── Estimation / distance entre génomes ────────────────────────────────────
   - mash            # Comparaison rapide de génomes
+ # - kraken2            # Comparaison rapide de génomes
 
   # ─── Assemblage de génome ────────────────────────────────────────────────────
   - spades          # Assembleur Illumina

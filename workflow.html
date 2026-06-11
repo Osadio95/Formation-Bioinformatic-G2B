@@ -266,8 +266,9 @@ bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
 
   <div class="section" id="conda-env">
     <h2>3) Creation de l'environnement conda</h2>
-    <pre><code>conda env create -f seqsero2.yml
-      conda env create -f environment.yml</code></pre>
+    <pre><code>conda env create -f environment.yml
+conda env create -f seqsero2.yml      
+conda env create -f kraken2.yml</code></pre>
 <p>Tous les logiciels ne peuvent pas fonctionner dans un seul environnement fait de conflits entre eux.</p>
     <ul>
       <li>conda env create : Permet de créer un environnement conda</li>
@@ -485,7 +486,10 @@ wget -O kdb.tgz https://genome-idx.s3.amazonaws.com/kraken/minikraken2_v2_8GB_20
 #Extraire la base de donnée
 tar -xvzf kdb_8GB.tgz</code></pre>
 <h4>Lancer analyse de Kraken2</h4>
-<pre><code># Classification taxonomique avec Kraken2 sur des reads
+<pre><code>#Activation de l'environnement kraken2
+conda activate kraken2
+
+  # Classification taxonomique avec Kraken2 sur des reads
 kraken2 --db /kdb --paired \
         trim_S1_R1.fastq.gz trim_S1_R2.fastq.gz \
         --output kraken_reads.out --report kraken_reads.report
@@ -493,10 +497,7 @@ kraken2 --db /kdb --paired \
 # Classification sur un fichier fasta
 kraken2 --db /kdb --output kraken_fasta.out --report kraken_fasta.report S1_assembled/scaffolds.fasta
 
-# Estimation des abondances avec Bracken (niveau espèce)
-bracken -d /chemin/vers/kraken_db \
-        -i kraken.report -o bracken.species.report \
-        -l S -r 150</code></pre>
+conda deactivate</code></pre>
   </div>
 
   <div class="section" id="completude">

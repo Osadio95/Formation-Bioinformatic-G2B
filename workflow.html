@@ -266,7 +266,8 @@ bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
 
   <div class="section" id="conda-env">
     <h2>3) Creation de l'environnement conda</h2>
-    <pre><code> conda env create -f environment.yml</code></pre>
+    <pre><code>conda env create -f seqsero2.yml
+      conda env create -f environment.yml</code></pre>
 <p>Tous les logiciels ne peuvent pas fonctionner dans un seul environnement fait de conflits entre eux.</p>
     <ul>
       <li>conda env create : Permet de créer un environnement conda</li>
@@ -533,7 +534,7 @@ ectyper -i *.fasta -o ectyper
 conda activate seqsero2
 
 # Lancer SeqSero sur des fasta
-SeqSero2_package.py -i salmonella.fasta -m k -t 4
+SeqSero2_package.py -i S2_assembled/assembly.fasta -m k -t 4
 conda deactivate</code></pre>
     <p>Pour seqsero2 : (Peut aussi marcher pour les reads)</p>
     <ul>
@@ -638,8 +639,30 @@ mlst *.fasta > mlst.csv
   </div>
 
   <div class="section" id="exercice1">
-    <h2>Exercice 1</h2>
-    <p>Consigne dans le dossier exercice1 du dossier partagé sur drive</p>
+    <h2>Exercice 1 : Comparaison assemblage de novo vs reference mapping</h2>  
+    <p>Faire exercice ci-dessous : </p>
+    <pre><code># Index de la référence
+bwa index S1_ref.fasta
+
+# Alignement des reads sur la référence
+bwa mem S1_ref.fasta trim_S1_R1.fastq.gz trim_S1_R2.fastq.gz > aln.sam 
+
+# SAM → BAM trié + index
+samtools view -bS aln.sam | samtools sort -o aln.sorted.bam && samtools index aln.sorted.bam
+
+# Statistiques de mapping
+samtools flagstat aln.sorted.bam > mapping_stats.txt
+
+# Couverture
+samtools depth aln.sorted.bam > depth.txt
+
+# Appel de variants
+bcftools mpileup -f S1_ref.fasta aln.sorted.bam | bcftools call -mv -Oz -o variants.vcf.gz && tabix -p vcf variants.vcf.gz
+
+# Génération du consensus (assemblage final)
+bcftools consensus -f S1_ref.fasta variants.vcf.gz > consensus.fasta</code></pre>
+<p>Questions : Comparer les genes de resistances retrouves par la methode de novo et la methode par reference mapping. Que constatez vous ?
+  Pourquoi il est preferable d'utiliser par l'approche de novo ? </p>
   </div>
 
   <div class="section" id="exercice2">

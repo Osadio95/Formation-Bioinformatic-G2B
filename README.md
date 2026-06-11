@@ -175,4 +175,4 @@ Vous êtes libre de l'utiliser, modifier et redistribuer à condition de citer l
 
 ---
 
-mise à jour : 2026*
+Derniere mise à jour : 2026

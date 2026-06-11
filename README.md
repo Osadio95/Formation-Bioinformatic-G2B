@@ -116,6 +116,8 @@ Datasets disponibles sur Zenodo : https://zenodo.org/records/20627702
 
 ## Pipeline bioinformatique
 
+![DIC diagram](cours/DIC1.drawio.png)
+
 ```
 Données brutes (FASTQ)
         │

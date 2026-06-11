@@ -67,6 +67,7 @@ cd Formation-Bioinformatic-G2B
 
 # 3. Créer l'environnement Conda
 conda env create -f environment.yml
+onda env create -f seqsero2.yml
 
 # 4. Activer l'environnement
 conda activate bioinformatic

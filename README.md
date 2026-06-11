@@ -162,6 +162,10 @@ Les contributions des étudiants (corrections, suggestions, traductions) sont le
 
 ---
 
+<img width="239" height="99" alt="image" src="https://github.com/user-attachments/assets/26777f64-3610-4cdf-bc5b-002a2c35b1e8" /> <img src="cours/LOGO_ESP.png" alt="Logo ESP" width="120">
+
+---
+
 ## Licence
 
 Ce matériel pédagogique est distribué sous licence **Creative Commons CC BY-SA 4.0**.  
@@ -171,6 +175,4 @@ Vous êtes libre de l'utiliser, modifier et redistribuer à condition de citer l
 
 ---
 
-<img width="239" height="99" alt="image" src="https://github.com/user-attachments/assets/26777f64-3610-4cdf-bc5b-002a2c35b1e8" /> <img src="cours/LOGO_ESP.png" alt="Logo ESP" width="150">
-
-*Cours développé pour le programme de Génie Biologique et Biotechnologies — mise à jour : 2026*
+mise à jour : 2026*

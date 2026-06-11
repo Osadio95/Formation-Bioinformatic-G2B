@@ -39,11 +39,13 @@ Formation-Bioinformatic-G2B/
 ├──README.md                  ← Ce fichier
 ├──environment.yml            ← Environnement Conda à installer
 ├──seqsero2.yml               ← Environnement Conda de SeqSero2
+├──kraken2.yml                ← Environnement Conda de SeqSero2
 ├──workflow.html              ← Etapes de l'analyse bioinformatique
 ├──S1_ref.fasta               ← Fichier fasta de référence pour S1
 ├──S2_ref.fasta               ← Fichier fasta de référence pour S2
 ├──cours/
         ├──cours_bioinformatique_AMR-G2B.html
+        ├──Installation_WSL.pdf
 ```
 ---
 
@@ -67,7 +69,8 @@ cd Formation-Bioinformatic-G2B
 
 # 3. Créer l'environnement Conda
 conda env create -f environment.yml
-onda env create -f seqsero2.yml
+conda env create -f seqsero2.yml
+conda env create -f kraken2.yml
 
 # 4. Activer l'environnement
 conda activate bioinformatic

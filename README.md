@@ -68,15 +68,18 @@ cd ~
 git clone https://github.com/Osadio95/Formation-Bioinformatic-G2B.git
 cd Formation-Bioinformatic-G2B
 
-# 3. Créer l'environnement Conda
-conda env create -f environment.yml
-conda env create -f seqsero2.yml
-conda env create -f kraken2.yml
+# 3. Installer mamba (Si Conda n'est pas installé : suivre installation dans workflow.html)
+conda install -n base -c conda-forge mamba
 
-# 4. Activer l'environnement
+# 4. Créer l'environnement Conda
+mamba env create -f environment.yml
+mamba env create -f seqsero2.yml
+mamba env create -f kraken2.yml
+
+# 5. Activer l'environnement
 conda activate bioinformatic
 
-# 5. Vérifier l'installation
+# 6. Vérifier l'installation
 fastqc --version
 spades.py --version
 amrfinder --version
@@ -91,7 +94,7 @@ mlst --version
 ectyper --version
 abricate --version
 
-#.5  Datasets
+#.7  Datasets
 Datasets disponibles sur Zenodo : https://zenodo.org/records/20627702
 ```
 

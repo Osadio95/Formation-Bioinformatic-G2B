@@ -264,7 +264,12 @@ bash Miniconda3-latest-MacOSX-x86_64.sh
 
 #Mac Apple Silicon (arm64 - M1, M2, M3, M4)
 curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
-bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
+bash Miniconda3-latest-MacOSX-arm64.sh
+
+#Installation de mamba :
+conda install mamba -n base -c conda-forge
+
+</code></pre>
     <ul>
       <li>wget : Permet de télécharger un fichier grâce à un lien de téléchargement</li>
       <li>bash : Ouvrir l’interpréteur Bash et d’exécuter automatiquement toutes les commandes écrites dans le fichier </li>
@@ -274,12 +279,12 @@ bash Miniconda3-latest-MacOSX-arm64.sh</code></pre>
   <div class="section" id="conda-env">
     <h2>3) Creation de l'environnement conda</h2>
     <pre><code>cd ~/Formation-Bioinformatic-G2B
-conda env create -f environment.yml
-conda env create -f seqsero2.yml      
-conda env create -f kraken2.yml</code></pre>
+mamba env create -f environment.yml
+mamba env create -f seqsero2.yml      
+mamba env create -f kraken2.yml</code></pre>
 <p>Tous les logiciels ne peuvent pas fonctionner dans un seul environnement fait de conflits entre eux.</p>
     <ul>
-      <li>conda env create : Permet de créer un environnement conda</li>
+      <li>mamba env create : Permet de créer un environnement mamba</li>
       <li>-f : creer un environnement a partir d'un fichier .yml</li>
     </ul>
   </div>
@@ -319,7 +324,7 @@ flye --version
 
   <div class="section" id="get-reads">
     <h2>4b) Téléchargement des reads depuis Sequence Reads Archive (SRA)</h2>
-    <pre><code> #Télécharger les reads 
+    <pre><code>#Télécharger les reads 
 wget -O data.zip "https://zenodo.org/api/records/20627702/files-archive"
 unzip data.zip
 ls	
@@ -467,11 +472,10 @@ sort -k 3 -i mash_S1_output.csv | head -n 1 | awk '{print $1}'</code></pre>
     <p>Outil bioinformatique qui évalue la qualité d’un assemblage de génome en fournissant des métriques comme la taille des contigs, le N50, 
   le nombre de séquences manquantes ou mal assemblées, et permet de comparer différents assemblages entre eux.</p>
     <pre><code>#Commande QUAST pour les reads Illumina
-      quast S1_assembled/scaffolds.fasta -1 trim_S1_R1.fastq.gz -2 trim_S1_R2.fastq.gz -o quast_S1 -r S1_ref.fasta
+quast S1_assembled/scaffolds.fasta -1 trim_S1_R1.fastq.gz -2 trim_S1_R2.fastq.gz -o quast_S1 -r S1_ref.fasta
 
-      #Commande QUAST pour les reads Nanopore
-      quast S2_assembled/assembly.fasta --nanopore clean_S2_R1.fastq.gz -o quast_S2 -r S2_ref.fasta
-    </code></pre>
+#Commande QUAST pour les reads Nanopore
+quast S2_assembled/assembly.fasta --nanopore clean_S2_R1.fastq.gz -o quast_S2 -r S2_ref.fasta</code></pre>
      <p>
       <ul>
       <li>-1 : Reads 1 (non obligatoire)</li>
